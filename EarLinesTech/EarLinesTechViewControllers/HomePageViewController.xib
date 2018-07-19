@@ -1,0 +1,240 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14109" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14088"/>
+        <capability name="Constraints with non-1.0 multipliers" minToolsVersion="5.1"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="HomePageViewController">
+            <connections>
+                <outlet property="bottomLab" destination="F5G-Pd-dVb" id="CoB-cg-qXt"/>
+                <outlet property="bottomMagrgin" destination="kRw-EZ-5RI" id="zDT-KK-jdw"/>
+                <outlet property="detailLab" destination="9fS-wX-YtG" id="TO0-Hn-P6V"/>
+                <outlet property="earImgv" destination="fBl-Be-GeL" id="H3j-TY-nck"/>
+                <outlet property="ewkjBtn" destination="ZLW-rB-SU2" id="C2A-Yw-aQf"/>
+                <outlet property="ewlinesAnasize" destination="OBL-9e-cDg" id="SyT-FZ-CH9"/>
+                <outlet property="myEwBtn" destination="cFH-wV-7x3" id="mca-Wm-hDm"/>
+                <outlet property="onlineShopBtn" destination="P00-qj-qoz" id="Nar-2T-GnX"/>
+                <outlet property="topImgV" destination="u6U-IR-R3B" id="Xyr-nJ-Qxj"/>
+                <outlet property="topLogoLab" destination="eDo-BW-YNp" id="fe7-q3-tGa"/>
+                <outlet property="topMargin" destination="gtJ-6Z-gIx" id="156-xk-csK"/>
+                <outlet property="toplogImgv" destination="RcO-MY-UE5" id="a0S-oS-fAX"/>
+                <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
+            </connections>
+        </placeholder>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="i5M-Pr-FkT">
+            <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="a_banner_bg.png" translatesAutoresizingMaskIntoConstraints="NO" id="u6U-IR-R3B">
+                    <rect key="frame" x="0.0" y="64" width="431" height="333.5"/>
+                </imageView>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="top" horizontalHuggingPriority="251" verticalHuggingPriority="251" insetsLayoutMarginsFromSafeArea="NO" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="2" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="eDo-BW-YNp">
+                    <rect key="frame" x="10" y="74" width="165.5" height="40"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="40" id="Nok-H1-R2M"/>
+                    </constraints>
+                    <string key="text">Auricular technology
+耳纹科技</string>
+                    <fontDescription key="fontDescription" type="system" pointSize="12"/>
+                    <nil key="textColor"/>
+                    <nil key="highlightedColor"/>
+                </label>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" insetsLayoutMarginsFromSafeArea="NO" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="F5G-Pd-dVb">
+                    <rect key="frame" x="20" y="407.5" width="335" height="120"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="120" id="98g-7M-f13"/>
+                    </constraints>
+                    <string key="text">本发明的有益效果是:
+耳纹生物识别技术主要是指通过耳纹生物特征进行身份认证和身体健康诊断及预防治疗的一种技术，耳纹生物特征通常具有唯一性、可以测量或可自动识别和验证、遗传性或终身不变等特点，目前只有耳纹识别诊断系统才能对身体健康做出耳纹识别预防健康保护身体。这也是其它生物识别无法替代的。因此耳纹生物识别认证技术较传统认证技术存在较大的优势。</string>
+                    <fontDescription key="fontDescription" type="system" pointSize="12"/>
+                    <nil key="textColor"/>
+                    <nil key="highlightedColor"/>
+                </label>
+                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="a_font.png" translatesAutoresizingMaskIntoConstraints="NO" id="RcO-MY-UE5">
+                    <rect key="frame" x="169.5" y="84" width="195.5" height="108"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="108" id="VAB-0K-Tgx"/>
+                    </constraints>
+                </imageView>
+                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" insetsLayoutMarginsFromSafeArea="NO" image="a_er.png" translatesAutoresizingMaskIntoConstraints="NO" id="fBl-Be-GeL">
+                    <rect key="frame" x="10" y="134" width="195.5" height="253.5"/>
+                </imageView>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" usesAttributedText="YES" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="9fS-wX-YtG">
+                    <rect key="frame" x="225.5" y="197" width="139.5" height="100"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="100" id="4ch-Ju-Iem"/>
+                    </constraints>
+                    <attributedString key="attributedText">
+                        <fragment content="耳纹分析，是您健康的分析师">
+                            <attributes>
+                                <font key="NSFont" size="12" name=".PingFangSC-Regular"/>
+                                <paragraphStyle key="NSParagraphStyle" alignment="natural" lineBreakMode="wordWrapping" baseWritingDirection="natural" tighteningFactorForTruncation="0.0"/>
+                            </attributes>
+                        </fragment>
+                        <fragment>
+                            <string key="content" base64-UTF8="YES">
+Cg
+</string>
+                            <attributes>
+                                <font key="NSFont" metaFont="cellTitle"/>
+                                <paragraphStyle key="NSParagraphStyle" alignment="natural" lineBreakMode="wordWrapping" baseWritingDirection="natural" tighteningFactorForTruncation="0.0"/>
+                            </attributes>
+                        </fragment>
+                        <fragment content="耳纹识别远程图像身体诊断系统">
+                            <attributes>
+                                <font key="NSFont" size="12" name=".PingFangSC-Regular"/>
+                                <paragraphStyle key="NSParagraphStyle" alignment="natural" lineBreakMode="wordWrapping" baseWritingDirection="natural" tighteningFactorForTruncation="0.0"/>
+                            </attributes>
+                        </fragment>
+                        <fragment>
+                            <string key="content" base64-UTF8="YES">
+Cg
+</string>
+                            <attributes>
+                                <font key="NSFont" metaFont="cellTitle"/>
+                                <paragraphStyle key="NSParagraphStyle" alignment="natural" lineBreakMode="wordWrapping" baseWritingDirection="natural" tighteningFactorForTruncation="0.0"/>
+                            </attributes>
+                        </fragment>
+                        <fragment content="专利号：">
+                            <attributes>
+                                <font key="NSFont" size="10" name=".PingFangSC-Regular"/>
+                                <paragraphStyle key="NSParagraphStyle" alignment="natural" lineBreakMode="wordWrapping" baseWritingDirection="natural" tighteningFactorForTruncation="0.0"/>
+                            </attributes>
+                        </fragment>
+                        <fragment>
+                            <string key="content">ZL201520317240.4
+</string>
+                            <attributes>
+                                <font key="NSFont" size="10" name=".AppleSystemUIFont"/>
+                                <paragraphStyle key="NSParagraphStyle" alignment="natural" lineBreakMode="wordWrapping" baseWritingDirection="natural" tighteningFactorForTruncation="0.0"/>
+                            </attributes>
+                        </fragment>
+                        <fragment content="发明专利号：">
+                            <attributes>
+                                <font key="NSFont" size="10" name=".PingFangSC-Regular"/>
+                                <paragraphStyle key="NSParagraphStyle" alignment="natural" lineBreakMode="wordWrapping" baseWritingDirection="natural" tighteningFactorForTruncation="0.0"/>
+                            </attributes>
+                        </fragment>
+                        <fragment>
+                            <string key="content">20140684383.9
+</string>
+                            <attributes>
+                                <font key="NSFont" size="10" name=".AppleSystemUIFont"/>
+                                <paragraphStyle key="NSParagraphStyle" alignment="natural" lineBreakMode="wordWrapping" baseWritingDirection="natural" tighteningFactorForTruncation="0.0"/>
+                            </attributes>
+                        </fragment>
+                        <fragment content="版权号：沪作登字">
+                            <attributes>
+                                <font key="NSFont" size="10" name=".PingFangSC-Regular"/>
+                                <paragraphStyle key="NSParagraphStyle" alignment="left" lineBreakMode="wordWrapping" baseWritingDirection="natural" tighteningFactorForTruncation="0.0"/>
+                            </attributes>
+                        </fragment>
+                        <fragment content="-2015-L-00449879">
+                            <attributes>
+                                <font key="NSFont" size="10" name=".AppleSystemUIFont"/>
+                                <paragraphStyle key="NSParagraphStyle" alignment="left" lineBreakMode="wordWrapping" baseWritingDirection="natural" tighteningFactorForTruncation="0.0"/>
+                            </attributes>
+                        </fragment>
+                    </attributedString>
+                    <nil key="highlightedColor"/>
+                </label>
+                <button opaque="NO" tag="100" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="OBL-9e-cDg">
+                    <rect key="frame" x="205" y="317.5" width="120" height="40"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="40" id="KG3-18-22E"/>
+                        <constraint firstAttribute="width" constant="120" id="Q5A-3T-s8F"/>
+                    </constraints>
+                    <state key="normal" image="index_btn.png"/>
+                    <connections>
+                        <action selector="click:" destination="-1" eventType="touchUpInside" id="jOK-UQ-A9v"/>
+                    </connections>
+                </button>
+                <button opaque="NO" tag="101" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="P00-qj-qoz">
+                    <rect key="frame" x="20" y="612" width="90" height="40"/>
+                    <constraints>
+                        <constraint firstAttribute="width" constant="90" id="Ctb-JL-ahH"/>
+                        <constraint firstAttribute="height" constant="40" id="sfk-BX-72h"/>
+                    </constraints>
+                    <state key="normal" title="在线选购" backgroundImage="index_btn_bottom.png">
+                        <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                    </state>
+                    <connections>
+                        <action selector="click:" destination="-1" eventType="touchUpInside" id="47J-hB-nXF"/>
+                    </connections>
+                </button>
+                <button opaque="NO" tag="102" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ZLW-rB-SU2">
+                    <rect key="frame" x="142.5" y="612" width="90" height="40"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="40" id="Y0Y-ns-DJ0"/>
+                        <constraint firstAttribute="width" constant="90" id="zeF-rM-Q5x"/>
+                    </constraints>
+                    <state key="normal" title="耳纹科技" backgroundImage="index_btn_bottom.png">
+                        <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                    </state>
+                    <connections>
+                        <action selector="click:" destination="-1" eventType="touchUpInside" id="Ocw-pH-Oei"/>
+                    </connections>
+                </button>
+                <button opaque="NO" tag="103" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="cFH-wV-7x3">
+                    <rect key="frame" x="265" y="612" width="90" height="40"/>
+                    <constraints>
+                        <constraint firstAttribute="width" constant="90" id="XSD-oW-tXA"/>
+                        <constraint firstAttribute="height" constant="40" id="ZDn-Gb-3TI"/>
+                    </constraints>
+                    <state key="normal" title="我的耳纹" backgroundImage="index_btn_bottom.png">
+                        <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                    </state>
+                    <connections>
+                        <action selector="click:" destination="-1" eventType="touchUpInside" id="GO9-9C-pZs"/>
+                    </connections>
+                </button>
+            </subviews>
+            <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <constraints>
+                <constraint firstItem="P00-qj-qoz" firstAttribute="centerY" secondItem="ZLW-rB-SU2" secondAttribute="centerY" id="27Y-FJ-GAK"/>
+                <constraint firstItem="u6U-IR-R3B" firstAttribute="height" secondItem="i5M-Pr-FkT" secondAttribute="height" multiplier="0.5" id="3GY-Yl-dyl"/>
+                <constraint firstItem="F5G-Pd-dVb" firstAttribute="top" secondItem="u6U-IR-R3B" secondAttribute="bottom" constant="10" id="5yo-oK-CC0"/>
+                <constraint firstItem="fBl-Be-GeL" firstAttribute="top" secondItem="eDo-BW-YNp" secondAttribute="bottom" constant="20" id="7L2-CQ-XiL"/>
+                <constraint firstItem="cFH-wV-7x3" firstAttribute="centerY" secondItem="ZLW-rB-SU2" secondAttribute="centerY" id="AbQ-W9-KIe"/>
+                <constraint firstItem="RcO-MY-UE5" firstAttribute="top" secondItem="u6U-IR-R3B" secondAttribute="top" constant="20" id="F7c-NL-sD5"/>
+                <constraint firstItem="F5G-Pd-dVb" firstAttribute="top" secondItem="OBL-9e-cDg" secondAttribute="bottom" constant="50" id="GKj-jl-K9X"/>
+                <constraint firstAttribute="trailing" secondItem="F5G-Pd-dVb" secondAttribute="trailing" constant="20" id="XcW-Wc-34c"/>
+                <constraint firstItem="fBl-Be-GeL" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" constant="10" id="ZVV-k2-oZ4"/>
+                <constraint firstItem="u6U-IR-R3B" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="Zrt-Er-prs"/>
+                <constraint firstItem="F5G-Pd-dVb" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" constant="20" id="aQi-Wd-cig"/>
+                <constraint firstItem="fBl-Be-GeL" firstAttribute="width" secondItem="u6U-IR-R3B" secondAttribute="width" multiplier="0.5" constant="-20" id="aWs-fN-qRv"/>
+                <constraint firstAttribute="trailing" secondItem="cFH-wV-7x3" secondAttribute="trailing" constant="20" id="cKm-Re-Sbg"/>
+                <constraint firstItem="eDo-BW-YNp" firstAttribute="width" secondItem="u6U-IR-R3B" secondAttribute="width" multiplier="0.5" constant="-50" id="d9H-pk-z2M"/>
+                <constraint firstAttribute="trailing" secondItem="OBL-9e-cDg" secondAttribute="trailing" constant="50" id="dOS-ap-j53"/>
+                <constraint firstItem="P00-qj-qoz" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" constant="20" id="ed1-mh-129"/>
+                <constraint firstItem="u6U-IR-R3B" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" constant="64" id="gtJ-6Z-gIx"/>
+                <constraint firstAttribute="trailing" secondItem="RcO-MY-UE5" secondAttribute="trailing" constant="10" id="hRL-al-vfC"/>
+                <constraint firstItem="eDo-BW-YNp" firstAttribute="top" secondItem="u6U-IR-R3B" secondAttribute="top" constant="10" id="iHq-Vi-6bO"/>
+                <constraint firstAttribute="bottom" secondItem="ZLW-rB-SU2" secondAttribute="bottom" constant="15" id="kRw-EZ-5RI"/>
+                <constraint firstAttribute="trailing" secondItem="9fS-wX-YtG" secondAttribute="trailing" constant="10" id="lrq-qI-Lsa"/>
+                <constraint firstItem="RcO-MY-UE5" firstAttribute="width" secondItem="u6U-IR-R3B" secondAttribute="width" multiplier="0.5" constant="-20" id="mH3-9X-feW"/>
+                <constraint firstItem="F5G-Pd-dVb" firstAttribute="top" secondItem="fBl-Be-GeL" secondAttribute="bottom" constant="20" id="meE-JL-kBG"/>
+                <constraint firstItem="9fS-wX-YtG" firstAttribute="top" secondItem="RcO-MY-UE5" secondAttribute="bottom" constant="5" id="n8B-bU-5zf"/>
+                <constraint firstItem="ZLW-rB-SU2" firstAttribute="centerX" secondItem="i5M-Pr-FkT" secondAttribute="centerX" id="vBl-u7-Xjf"/>
+                <constraint firstItem="eDo-BW-YNp" firstAttribute="leading" secondItem="u6U-IR-R3B" secondAttribute="leading" constant="10" id="wZd-ke-ltG"/>
+                <constraint firstItem="9fS-wX-YtG" firstAttribute="leading" secondItem="fBl-Be-GeL" secondAttribute="trailing" constant="20" id="x4r-6c-KIU"/>
+            </constraints>
+            <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+            <point key="canvasLocation" x="211" y="-501"/>
+        </view>
+    </objects>
+    <resources>
+        <image name="a_banner_bg.png" width="375" height="391"/>
+        <image name="a_er.png" width="178" height="278"/>
+        <image name="a_font.png" width="233" height="124"/>
+        <image name="index_btn.png" width="135" height="44"/>
+        <image name="index_btn_bottom.png" width="91" height="41"/>
+    </resources>
+</document>

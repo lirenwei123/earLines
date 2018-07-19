@@ -1,0 +1,59 @@
+K 25
+svn:wc:ra_dav:version-url
+V 112
+/svn/earmall/!svn/ver/96/trunk/mobile/iOS/ewkj/EarLinesTech/EarLinesTechViewControllers/EarLinesAnalysisVC/Model
+END
+analyseResultDataModels.h
+K 25
+svn:wc:ra_dav:version-url
+V 138
+/svn/earmall/!svn/ver/16/trunk/mobile/iOS/ewkj/EarLinesTech/EarLinesTechViewControllers/EarLinesAnalysisVC/Model/analyseResultDataModels.h
+END
+analyseResult.h
+K 25
+svn:wc:ra_dav:version-url
+V 128
+/svn/earmall/!svn/ver/96/trunk/mobile/iOS/ewkj/EarLinesTech/EarLinesTechViewControllers/EarLinesAnalysisVC/Model/analyseResult.h
+END
+analyseResultViewModel.m
+K 25
+svn:wc:ra_dav:version-url
+V 137
+/svn/earmall/!svn/ver/96/trunk/mobile/iOS/ewkj/EarLinesTech/EarLinesTechViewControllers/EarLinesAnalysisVC/Model/analyseResultViewModel.m
+END
+nearMerchant.m
+K 25
+svn:wc:ra_dav:version-url
+V 127
+/svn/earmall/!svn/ver/40/trunk/mobile/iOS/ewkj/EarLinesTech/EarLinesTechViewControllers/EarLinesAnalysisVC/Model/nearMerchant.m
+END
+analyseResult.m
+K 25
+svn:wc:ra_dav:version-url
+V 128
+/svn/earmall/!svn/ver/96/trunk/mobile/iOS/ewkj/EarLinesTech/EarLinesTechViewControllers/EarLinesAnalysisVC/Model/analyseResult.m
+END
+Items.h
+K 25
+svn:wc:ra_dav:version-url
+V 120
+/svn/earmall/!svn/ver/96/trunk/mobile/iOS/ewkj/EarLinesTech/EarLinesTechViewControllers/EarLinesAnalysisVC/Model/Items.h
+END
+Items.m
+K 25
+svn:wc:ra_dav:version-url
+V 120
+/svn/earmall/!svn/ver/96/trunk/mobile/iOS/ewkj/EarLinesTech/EarLinesTechViewControllers/EarLinesAnalysisVC/Model/Items.m
+END
+analyseResultViewModel.h
+K 25
+svn:wc:ra_dav:version-url
+V 137
+/svn/earmall/!svn/ver/96/trunk/mobile/iOS/ewkj/EarLinesTech/EarLinesTechViewControllers/EarLinesAnalysisVC/Model/analyseResultViewModel.h
+END
+nearMerchant.h
+K 25
+svn:wc:ra_dav:version-url
+V 127
+/svn/earmall/!svn/ver/40/trunk/mobile/iOS/ewkj/EarLinesTech/EarLinesTechViewControllers/EarLinesAnalysisVC/Model/nearMerchant.h
+END
