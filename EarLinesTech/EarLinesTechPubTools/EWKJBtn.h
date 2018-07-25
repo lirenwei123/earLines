@@ -15,6 +15,7 @@ typedef NS_ENUM(NSUInteger, BTNTYPE) {
     BTNTYPEEWKJ_share,
     BTNTYPEEWKJ_personalCenter,
     BTNTYPEEWKJ_personalCenter_rightdetail,
+    BTNTYPEEWKJ_personalCenterTextOnly,
     BTNTYPE_mallClass,
     BTNTYPERL,
     BTNTYPELR,
@@ -49,12 +50,15 @@ typedef NS_ENUM(NSUInteger, BTNCONTOLSTATE) {
 -(instancetype)initWithFrame:(CGRect)frame normalImg:(UIImage *)img1 clickedImage:(UIImage *)clickImg disableImg:(UIImage *)img2 title:(NSString *)title touchEvent:(T)event andbtnType:(BTNTYPE)type;
 
 -(instancetype)initWithFrame:(CGRect)frame  titleLeft:(NSString *)titleL titleRight:(NSString *)titleR touchEvent:(T)event;
+
+-(instancetype)initWithFrame:(CGRect)frame normalBackImg:(UIImage *)img1 selectBackImg:(UIImage *)img2 title:(NSString *)title  img:(UIImage *)img touchEvent:(T)event;
+
 //耳纹科技定制
 -(instancetype)initEWKJDetailBtnFrame:(CGRect)frame Title:(NSString*)title touchEvent:(T)event;
 -(instancetype)initEWKJDetailBtnFrame:(CGRect)frame ImageName:(NSString*)imgName touchEvent:(T)event;
 
 @property(nonatomic,assign)BTNCONTOLSTATE btnState;
 
-
+@property(nonatomic,assign)BOOL selected;
 
 @end

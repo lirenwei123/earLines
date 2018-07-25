@@ -7,13 +7,12 @@
 //
 
 #import "EWKJBaseViewController.h"
-#import "LoginViewController.h"
 
 
 
 
 @interface EWKJBaseViewController ()<UIAlertViewDelegate>
-@property(nonatomic,assign)UIAlertView *needLoginAlert;
+@property(nonatomic,strong)alertBlcok alertSureBlock;
 @end
 
 @implementation EWKJBaseViewController
@@ -35,13 +34,6 @@
     [_navigationBar addSubview:_navigationTitle] ;
      [self addReturn];
     
-    if (_isNeedLogin) {
-        if (![[NSUserDefaults standardUserDefaults]boolForKey:ISLOGIN]) {
-            LoginViewController *logvc = [[LoginViewController alloc]init];
-            [self.navigationController pushViewController:logvc animated:NO];
-        }
-        
-    }
     
     [self addUI];
 }
@@ -52,12 +44,6 @@
 
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
-    if (_isNeedLogin && ![[NSUserDefaults standardUserDefaults]boolForKey:ISLOGIN]) {
-        
-        UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"提示" message:@"登录后方可使用该功能！" delegate:self cancelButtonTitle:@"确认" otherButtonTitles:nil];
-        [alert show];
-        _needLoginAlert  = alert;
-    }
 }
 
 -(void)addReturn{
@@ -85,7 +71,7 @@
 }
 
 -(void)returnCLick{
-    [self.navigationController popViewControllerAnimated:NO];
+    [self.navigationController popViewControllerAnimated:YES];
 }
 -(void)addRightBtnWithIMGname:(NSString *)imgName{
   
@@ -98,6 +84,20 @@
  
     [_navigationBar addSubview:backBtn];
 
+    
+}
+-(void)addRightBtnWithtitle:(NSString *)title{
+    
+    UIButton * backBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+    [backBtn setFrame:CGRectMake(SW-10-80, statusBarHeight+12, 80, 22)];
+    [backBtn addTarget: self action:@selector(rightNavitemCLick) forControlEvents:UIControlEventTouchUpInside];
+    [backBtn setTitle:title forState:UIControlStateNormal];
+    backBtn.titleLabel.font = EWKJfont(13);
+    backBtn.backgroundColor = [UIColor clearColor];
+    _rightNaviBtn = backBtn;
+    
+    [_navigationBar addSubview:backBtn];
+    
     
 }
 
@@ -117,18 +117,16 @@
         UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"提示" message:str delegate:self cancelButtonTitle:@"确认" otherButtonTitles:nil];
         [alert show];
 }
-    
--(void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex{
-    if (alertView == _needLoginAlert) {
-         [self.navigationController popViewControllerAnimated:NO];
-    }
-}
 
--(void)searchRequestWith:(NSString *)searchText complete:(successBlock)completeBlock   fail:(failureBlock)failBlock{
-    [SVProgressHUD showWithStatus:@"s 正在努力搜索中..."];
-    //        GET api/mall/search/proucts?name={name}&pageSize={pageSize}&pageIndex={pageIndex}
+
+
+
+-(void)searchRequestWith:(NSString *)searchText complete:(successBlock)completeBlock   fail:(failureBlockCode)failBlock{
+    [SVProgressHUD showWithStatus:@"正在努力搜索中..."];
+    //        api/mall/search/proucts?//搜索商品
+//    product/search/merchant/proucts? 搜索商家商品
   WeakSelf
-    NSString * url =[NSString stringWithFormat:@"http://em-webapi.zhiyunhulian.cn/api/mall/search/proucts?name=%@&pageSize=10&pageIndex=1",searchText];
+    NSString * url =[NSString stringWithFormat:@"%@product/search/merchant/proucts?name=%@&pageSize=10&pageIndex=1",httpHead,searchText];
  
     //需要把中文编码
     url = [url stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
@@ -142,16 +140,31 @@
                 }
             }
         }
-    } failure:^(NSError *error) {
-        [SVProgressHUD dismiss];
-        if (failBlock) {
-            failBlock(error);
-        }
-        [weakSelf alertWithString:@"搜索商品数据失败"];
+    } failure:^(NSError *error,NSInteger code) {
+         [SVProgressHUD dismiss];
+        [weakSelf TipWithErrorCode:code];
     }];
    
     
 }
+
+-(void)TipWithErrorCode:(NSInteger)errorCode{
+    if (errorCode == 401) {
+        [self alertWithString:@"登录已过期，请重新登录账号"];
+        LoginViewController *logvc = [[LoginViewController alloc]init];
+        logvc.loginCompelete = ^{
+            [self.navigationController popViewControllerAnimated:NO];
+        };
+        [self.navigationController pushViewController:logvc animated:NO];
+    }else{
+        
+        [self alertWithString:[NSString stringWithFormat:@"errorcode = %ld",errorCode]];
+    }
+    
+}
+
+
+
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];

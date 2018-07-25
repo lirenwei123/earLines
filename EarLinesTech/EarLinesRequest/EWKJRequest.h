@@ -11,6 +11,7 @@
 
 typedef void(^successBlock)(id datas);
 typedef void(^failureBlock)(NSError *error);
+typedef void(^failureBlockCode)(NSError *error,NSInteger statusCode);
 
 
 typedef NS_ENUM(NSUInteger, API_ID) {
@@ -82,6 +83,7 @@ typedef NS_ENUM(NSUInteger, API_ID) {
     
     //Earprints
     ear1 , //耳纹分析
+    ear2 , //我的耳纹
     
     //Mall商城
 //    mall1,
@@ -96,18 +98,29 @@ typedef NS_ENUM(NSUInteger, API_ID) {
 //    mall10,
     
     //cart购物车
-    cart1,
-    cart2,
-    cart3,
-    cart4,
-    cart5,
-    cart6,
+    cart1,//获取购物车中的商品数量
+    cart2,//添加商品到购物车
+    cart3,//调整购物车中商品的数量
+    cart4,//选中或取消选中购物车中的商品
+    cart5,//删除购物车中的商品
+    cart6,//获取购物车中的商品
     
     //profuct产品分类
     product1,
     product2,
     product3,
     
+    //订单
+    order1, //结算页面
+    order2,//创建订单 - 结算页面进行下单时调用此接口 PaymentMethod 付款方式 0：免费的订单 1：积分支付 2: 微信支付 3：支付宝支付
+    order3,//提交订单 - 未支付订单需要调用此接口完成支付 PaymentMethod 付款方式 0：免费的订单 1：积分支付 2: 微信支付 3：支付宝支付
+    order4,//获取我的订单
+    order5,//获取我订单详情 未支付 1, 已付款 2, 配货中 3, 已出库 4, 完成 5, 已退款 6
+    order6,//获取快递信息
+    order7,//删除未支付订单
+    order8,//退货或退款请求
+    order9,//获取快递信息
+    order10,//取消退货或退款请求
     
 };
 
@@ -122,9 +135,9 @@ typedef NS_ENUM(NSUInteger, API_ID) {
 +(instancetype)request;
 
     //上传照片
--(void)uploadWithAPIId:(API_ID)api Icons:(NSArray <UploadParam*>*)uploadIcons completed:(successBlock)success error:(failureBlock)failure;
+-(void)uploadWithAPIId:(API_ID)api Icons:(NSArray <UploadParam*>*)uploadIcons completed:(successBlock)success error:(failureBlockCode)failure;
 
 //通用请求方法
--(void)requestWithAPIId:(API_ID)api  httphead:(NSString*)head  bodyParaDic:(NSDictionary*)paraDic completed:(successBlock)success error:(failureBlock)failure;
+-(void)requestWithAPIId:(API_ID)api  httphead:(NSString*)head  bodyParaDic:(NSDictionary*)paraDic completed:(successBlock)success error:(failureBlockCode)failure;
 
 @end

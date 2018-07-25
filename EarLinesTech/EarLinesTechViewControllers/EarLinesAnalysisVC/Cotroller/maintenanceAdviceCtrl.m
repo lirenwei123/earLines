@@ -9,12 +9,15 @@
 #import "maintenanceAdviceCtrl.h"
 #import "MallHomeDataModels.h"
 #import "onlineshopCollectionViewCell.h"
+#import "Products.h"
+#import "MallTableView.h"
 
 @interface maintenanceAdviceCtrl ()<UICollectionViewDelegate,UICollectionViewDataSource>
 @property(nonatomic,strong)UICollectionView *adviceMallcoView;
 @property(nonatomic,strong)UIView *headerBGV;
-@property(nonatomic,strong)MallHome *mallModel;
 @property(nonatomic,assign)CGFloat textH;
+@property(nonatomic,strong)NSMutableArray *productModels;
+
 @end
 
 @implementation maintenanceAdviceCtrl
@@ -22,14 +25,16 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-    [self request];
+    self.navigationTitle.text = @"保养建议";
+    _productModels = @[].mutableCopy;
+    [self requestSuggestionInfo];
+  
 }
 
--(void)addUI{
-    self.navigationTitle.text = @"保养建议";
+
+-(void)addTab{
     
     
-      _adviceString = @"\t1.营养早餐必须有主食，还要有蔬菜和水果。假如只有两种以下营养的早餐，就属于低质量早餐。现在我们中国人20%不吃早餐，50%-60%不会吃早餐，早餐营养不好，中午，晚上是补不回来的。\n\t2.每天一盘蔬菜，必须八两到一斤，每天两个水果，每天三勺青油，不要超过25克，每天四两米饭或四个馒头，加上充足的职务蛋白质。";
     _textH = [_adviceString boundingRectWithSize:CGSizeMake(SW-30, MAXFLOAT) options:NSStringDrawingUsesLineFragmentOrigin|NSStringDrawingUsesFontLeading attributes:@{NSFontAttributeName:EWKJfont(13)} context:nil].size.height;
     
     UICollectionViewFlowLayout *layout = [[UICollectionViewFlowLayout alloc]init];
@@ -47,7 +52,8 @@
     [_adviceMallcoView registerClass:[UICollectionViewCell class] forCellWithReuseIdentifier:@"co"];
     [_adviceMallcoView registerNib:[UINib nibWithNibName:@"onlineshopCollectionViewCell" bundle:nil] forCellWithReuseIdentifier:@"onlineshop"];
     [_adviceMallcoView registerClass:[UICollectionReusableView class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"HeaderView"];
-  
+   _adviceMallcoView.delegate = self;
+    _adviceMallcoView.dataSource = self;
     [self.view addSubview:_adviceMallcoView];
     
     
@@ -57,45 +63,77 @@
     
 }
 
-
-#pragma mark -- 请求
--(void)request{
-//    api/mall/maintenancesuggestion/proucts?suggestionId={suggestionId}&pageSize={pageSize}&pageIndex={pageIndex}
+#pragma mark -- 请求保养建议信息
+-(void)requestSuggestionInfo{
+//    api/mall/maintenancesuggestion?suggestionId={suggestionId}&productPageSize={productPageSize}
+    if (_suggestID == 0) {
+        _suggestID = 1;
+    }
+    NSString *url = [NSString stringWithFormat:@"%@mall/maintenancesuggestion?suggestionId=%d&productPageSize=%d",httpHead,_suggestID,5];
+    
     WeakSelf
-    [SVProgressHUD showWithStatus:@"正在加载数据..."];
-   
-//    NSString *url = [NSString stringWithFormat:@"api/mall/maintenancesuggestion/proucts?suggestionId=%ld&pageSize=10&pageIndex=1",(long)_suggestID];
     
-    //test
-    NSString * url =[NSString stringWithFormat:@"http://em-webapi.zhiyunhulian.cn/api/mall/home?productPageSize=6&merchantPageSize=5&latitude=%d&longitude=%d",30,40];
-    
-        [HttpRequest getWithURLString:url parameters:nil success:^(id responseObject) {
-            [SVProgressHUD dismiss];
-            NSDictionary *dictResponse = [NSJSONSerialization JSONObjectWithData:responseObject options:NSJSONReadingAllowFragments error:nil];
-            if (dictResponse) {
-                NSDictionary *dict = dictResponse[Data];
-                if (dict) {
-                    weakSelf.mallModel = [MallHome modelObjectWithDictionary:dict];
-                    weakSelf.adviceMallcoView.delegate = self;
-                    weakSelf.adviceMallcoView.dataSource = self;
+    [HttpRequest lrw_getWithURLString:url parameters:nil success:^(id responseObject) {
+        if (responseObject) {
+            NSDictionary *dict = [responseObject  objectForKey:Data];
+            if (![dict isKindOfClass:[NSNull class]]) {
+                
+                weakSelf.adviceString = dict[@"FoodSuggestion"];
+                NSArray *products= dict[@"Products"];
+                if (products.count) {
+                    
+                    for (int i =0; i<products.count; i++) {
+                        Products  *model = [Products modelObjectWithDictionary:products[i]];
+                        [weakSelf.productModels addObject:model];
+                    }
                     [weakSelf.adviceMallcoView reloadData];
+                }else{
+                    //单独获取保养建议商品
+                    [weakSelf requestAdviceMallNumber:6];
                 }
+                [weakSelf addTab];
+            }else{
+                [weakSelf alertWithString:@"没有推荐商品"];
             }
-            
-        } failure:^(NSError *error) {
-            [SVProgressHUD dismiss];
-            [weakSelf alertWithString:@"推荐商品请求数据失败"];
-        }];
+        }
         
-    
+        
+        
+    } failure:^(NSError *error,NSInteger code) {
+      
+        [weakSelf TipWithErrorCode:code];
+    }];
 }
+
+#pragma mark - 分页获取保养建议推荐商品
+
+-(void)requestAdviceMallNumber:(int)mallCount{
+    WeakSelf
+//    api/mall/maintenancesuggestion/proucts?suggestionId={suggestionId}&pageSize={pageSize}&pageIndex={pageIndex}
+      NSString *url = [NSString stringWithFormat:@"%@mall/maintenancesuggestion/proucts?suggestionId=%d&pageSize=%d&pageIndex=%d",httpHead,_suggestID,mallCount,1];
+    [HttpRequest lrw_getWithURLString:url parameters:nil success:^(id responseObject) {
+        NSArray *datas = responseObject[Data];
+        if (datas.count) {
+            for (int i  =0 ; i <datas.count; i++) {
+                Products  *model = [Products modelObjectWithDictionary:datas[i]];
+                [weakSelf.productModels addObject:model];
+            }
+            [weakSelf.adviceMallcoView reloadData];
+        }else{
+            [weakSelf alertWithString:@"没有商品"];
+        }
+    } failure:^(NSError *error, NSInteger errorCode) {
+        [weakSelf alertWithString:@"请求商品错误"];
+    }];
+}
+
 
 #pragma mark -- collectionView delegate
 
 
 -(NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section{
     
-    return _mallModel.products.count;
+    return _productModels.count;
     
 }
 
@@ -155,19 +193,34 @@
     if ((!cell)) {
         cell = [onlineshopCollectionViewCell cell];
     }
-    Products  *product = _mallModel.products[indexPath.row];
+    Products  *product = _productModels[indexPath.row];
     cell.item = product;
+    WeakSelf
     cell.addBlock = ^(Products *item) {
-        
+        //添加商品到购物车
+        [weakSelf addtoCartWithMall:item];
     };
     
     return cell;
 }
 
-
-#pragma mark --more
+#pragma mark -- 添加到购物车
+-(void)addtoCartWithMall:(Products *)product{
+    NSMutableDictionary *dict =
+  @{@"ProductId":@((int)product.productId),@"Qty":@(1)}.mutableCopy;
+    WeakSelf
+    [[EWKJRequest request]requestWithAPIId:cart2 httphead:nil bodyParaDic:dict completed:^(id datas) {
+        [weakSelf alertWithString:@"添加成功！"];
+    } error:^(NSError *error, NSInteger statusCode) {
+        [weakSelf alertWithString:@"添加到购物车失败"];
+    }];
+}
+#pragma mark --更多商品　
 -(void)moreMall:(UIButton *)sender{
-    
+    MallTableView *mallTab = [[MallTableView alloc]init];
+    mallTab.mallType = mallTableType_baoyang;
+    mallTab.suggestId = _suggestID;
+    [self.navigationController pushViewController:mallTab animated:NO];
 }
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];

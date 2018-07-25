@@ -33,13 +33,16 @@
 
 -(void)request{
    WeakSelf
-    [HttpRequest lrw_getWithURLString:@"http://em-webapi.zhiyunhulian.cn/api/mall/product/categories" parameters:nil success:^(id responseObject) {
+    [SVProgressHUD showWithStatus:@"正在加载..."];
+    [HttpRequest lrw_getWithURLString:[NSString stringWithFormat:@"%@mall/product/categories",httpHead] parameters:nil success:^(id responseObject) {
+        [SVProgressHUD dismiss];
         NSArray *arrayData = responseObject[Data];
         if (arrayData.count) {
             [weakSelf addMallClassesWith:arrayData];
         }
-    } failure:^(NSError *error) {
-        [self alertWithString:@"没有分类商品！"];
+    } failure:^(NSError *error, NSInteger errorCode) {
+        [SVProgressHUD dismiss];
+        [weakSelf alertWithString:@"没有分类商品！"];
     }];
 }
 
@@ -104,7 +107,9 @@
 #pragma maek - 选择商品种类
 -(void)selectMall:(NSInteger)tag{
     MallTableView *mallTab = [[MallTableView alloc]init];
-    mallTab.mallType =tag%2==0?mallTableType_advice:mallTableType_nearby;
+    mallTab.isNotNeedOption = YES;
+    mallTab.mallType = mallTableType_category;
+    mallTab.categoryId = (int)tag;
     [self.navigationController pushViewController:mallTab animated:NO];
 }
 
@@ -121,6 +126,7 @@
     if (textField.text.length) {
         //搜索请求
         [self searchRequestWith:textField.text complete:^(id datas) {
+            
             if ([datas isKindOfClass:[NSArray class]])  {
                 NSArray *dataArray = (NSArray *)datas;
                 if (dataArray.count) {
@@ -130,8 +136,9 @@
                     [self alertWithString:@"没有您搜索的商品！"];
                 }
             }
-        } fail:^(NSError *error) {
-            [self alertWithString:@"请求错误！"];
+            
+        } fail:^(NSError *error, NSInteger statusCode) {
+            
         }];
         
         textField.text = nil;

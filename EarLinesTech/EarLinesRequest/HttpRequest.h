@@ -75,7 +75,7 @@ typedef NS_ENUM(NSUInteger,HttpRequestType) {
 + (void)lrw_getWithURLString:(NSString *)URLString
               parameters:(NSMutableDictionary *)parameters
                  success:(void (^)(id responseObject))success
-                 failure:(void (^)(NSError *error))failure;
+                 failure:(void (^)(NSError *error,NSInteger errorCode))failure;
 
 
 /**
@@ -95,7 +95,7 @@ typedef NS_ENUM(NSUInteger,HttpRequestType) {
 + (void)lirw_postWithURLString:(NSString *)URLString
                parameters:(NSMutableDictionary *)parameters
                   success:(void (^)(id responseObject))success
-                  failure:(void (^)(NSError *error))failure;
+                  failure:(void (^)(NSError *error,NSInteger errorCode))failure;
 /**
  *  发送网络请求
  *
@@ -116,7 +116,7 @@ typedef NS_ENUM(NSUInteger,HttpRequestType) {
                   parameters:(NSMutableDictionary *)parameters
                         type:(HttpRequestType)type
                      success:(void (^)(id responseObject))success
-                     failure:(void (^)(NSError *error))failure;
+                     failure:(void (^)(NSError *error,NSInteger errorCode))failure;
 
 /**
  *  上传图片
@@ -138,6 +138,6 @@ typedef NS_ENUM(NSUInteger,HttpRequestType) {
                      parameters:(NSMutableDictionary *)parameters
                     uploadParams:(NSArray<UploadParam *>*)uploadParams
                         success:(void (^)(id responseObject))success
-                        failure:(void (^)(NSError *error))failure;
+                        failure:(void (^)(NSError *error,NSInteger errorCode))failure;
 
 @end

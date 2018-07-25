@@ -12,14 +12,20 @@
 #import "LocationManager.h"
 #import "MallHomeDataModels.h"
 #import "mallClassesViewController.h"
+#import "MallDetailViewController.h"
+#import "MerchantDetailViewController.h"
+#import "MerchantModel.h"
+#import "MyShoppingCartCtrl.h"
 
 
 @interface MallTableView ()<UICollectionViewDelegate,UICollectionViewDataSource,UITableViewDelegate,UITableViewDataSource,UITextFieldDelegate>
 @property(nonatomic,strong)UICollectionView *adviceMallcoView;
 @property(nonatomic,strong)UITableView *nearbyMalltab;
 
-@property(nonatomic,strong)MallHome *adviceMallModel;
+@property(nonatomic,strong)NSMutableArray *productsModels;
+@property(nonatomic,strong)NSMutableArray *nearMerchantModels;
 @property(nonatomic,strong)UIView *noneDataBottomV;
+
 
 
 @end
@@ -32,10 +38,14 @@
 }
 
 -(void)addUI{
+    _nearMerchantModels = @[].mutableCopy;
+    _productsModels = @[].mutableCopy;
     self.view.backgroundColor = COLOR(243);
     [self addTopMenu];
     switch (_mallType) {
         case mallTableType_advice:
+        case mallTableType_baoyang:
+        case mallTableType_category:
         {
             UICollectionViewFlowLayout *layout = [[UICollectionViewFlowLayout alloc]init];
             layout.itemSize =   CGSizeMake((SW-15*3)/2, 164);
@@ -52,6 +62,8 @@
             [_adviceMallcoView registerClass:[UICollectionViewCell class] forCellWithReuseIdentifier:@"co"];
             [_adviceMallcoView registerNib:[UINib nibWithNibName:@"onlineshopCollectionViewCell" bundle:nil] forCellWithReuseIdentifier:@"onlineshop"];
             [_adviceMallcoView registerClass:[UICollectionReusableView class] forSupplementaryViewOfKind:UICollectionElementKindSectionFooter withReuseIdentifier:@"FooterView"];
+            _adviceMallcoView.delegate =self;
+            _adviceMallcoView.dataSource = self;
             [self.view addSubview:_adviceMallcoView];
         }
             break;
@@ -123,7 +135,10 @@
     [searchBG addSubview:searchTF];
     
     //选项
-    [self addRightBtnWithIMGname:@"nav_classification"];
+    if (_isNotNeedOption == NO ) {
+        
+        [self addRightBtnWithIMGname:@"nav_classification"];
+    }
 }
 -(void)rightNavitemCLick{
     mallClassesViewController *mallClass = [[mallClassesViewController alloc]init];
@@ -135,7 +150,7 @@
 
 -(NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section{
     
-    return _adviceMallModel.products.count;
+    return _productsModels.count;
     
 }
 
@@ -178,18 +193,27 @@
     if ((!cell)) {
         cell = [onlineshopCollectionViewCell cell];
     }
-    Products  *product = _adviceMallModel.products[indexPath.row];
+    Products  *product = _productsModels[indexPath.row];
     cell.item = product;
+    WeakSelf
     cell.addBlock = ^(Products *item) {
-        
+        //添加商品到购物车
+        [weakSelf addtoCartWithMall:item];
     };
     
     return cell;
 }
 
+-(void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath{
+    Products  *product = _productsModels[indexPath.row];
+    MallDetailViewController *detail = [[MallDetailViewController alloc]init];
+    detail.productID = product.productId;
+    [self.navigationController pushViewController:detail animated:NO];
+}
+
 #pragma mark -- tableDelegate
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
-    return 20;
+    return _nearMerchantModels.count;
 }
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
     return 93;
@@ -200,17 +224,26 @@
         cell = [merchantCell cell];
     }
     cell.contentView.backgroundColor = COLOR(243);
-    cell.imgv.image = [UIImage imageNamed:@"people"];
-    cell.describleLab.text = @"小龙坎老火锅(春熙店)";
-    cell.adressLab.text = @"春熙路 1.1km";
+    cell.item = _nearMerchantModels[indexPath.row];
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
     return cell;
 }
 
+-(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
+    MerchantModel *merchant = _nearMerchantModels[indexPath.row];
+    MerchantDetailViewController *merchantVC = [[MerchantDetailViewController alloc]init];
+    merchantVC.merchantId = merchant.merchantId;
+    [self.navigationController pushViewController:merchantVC animated:NO];
+    
+}
 
 
 
 #pragma mark - request
+
+
+
+
 -(void)request{
     //    GET api/mall/home?productPageSize={productPageSize}&merchantPageSize={merchantPageSize}&latitude={latitude}&longitude={longitude}
      WeakSelf
@@ -218,26 +251,29 @@
     switch (_mallType) {
         case mallTableType_advice:
             {
-                NSString * url =[NSString stringWithFormat:@"http://em-webapi.zhiyunhulian.cn/api/mall/home?productPageSize=20&merchantPageSize=1&latitude=%.2f&longitude=%.2f",LAT,LNG];
-                
-                [HttpRequest getWithURLString:url parameters:nil success:^(id responseObject) {
-                    [SVProgressHUD dismiss];
-                    NSDictionary *dictResponse = [NSJSONSerialization JSONObjectWithData:responseObject options:NSJSONReadingAllowFragments error:nil];
-                    if (dictResponse) {
-                        NSDictionary *dict = dictResponse[Data];
-                        if (dict) {
-                            weakSelf.adviceMallModel = [MallHome modelObjectWithDictionary:dict];
-                            weakSelf.adviceMallcoView.delegate = self;
-                            weakSelf.adviceMallcoView.dataSource = self;
-                            [weakSelf.adviceMallcoView reloadData];
-                            
-                        }
-                    }
+           
+                    NSString * url =[NSString stringWithFormat:@"%@mall/search/recommendproucts?pageSize=50&pageIndex=1",httpHead];
                     
-                } failure:^(NSError *error) {
-                    [SVProgressHUD dismiss];
-                    [weakSelf alertWithString:@"推荐商品请求数据失败"];
-                }];
+                    [HttpRequest lrw_getWithURLString:url parameters:nil success:^(id responseObject) {
+                        [SVProgressHUD dismiss];
+                        
+                        if (responseObject) {
+                            NSArray *datas = responseObject[Data];
+                            if (datas.count) {
+                                for (int i  =0 ; i <datas.count; i++) {
+                                    Products  *model = [Products modelObjectWithDictionary:datas[i]];
+                                    [weakSelf.productsModels addObject:model];
+                                }
+                                [weakSelf.adviceMallcoView reloadData];
+                            
+                            }
+                        }
+                        
+                    } failure:^(NSError *error,NSInteger code) {
+                        [SVProgressHUD dismiss];
+                        [weakSelf TipWithErrorCode:code];
+                    }];
+            
                 
             }
             break;
@@ -245,24 +281,111 @@
         case mallTableType_nearby:
         {
             
-            NSString * url =[NSString stringWithFormat:@"http://em-webapi.zhiyunhulian.cn/api/mall/search/nearmerchants?latitude=%.2f&longitude=%.2f&pageSize=2&pageIndex=1",LAT,LNG];
-            [HttpRequest getWithURLString:url parameters:nil success:^(id responseObject) {
-                
-                [SVProgressHUD dismiss];
-                NSDictionary *dictResponse1 = [NSJSONSerialization JSONObjectWithData:responseObject options:NSJSONReadingAllowFragments error:nil];
-                if (dictResponse1) {
-                    NSDictionary *dict = dictResponse1[Data];
-                    if (dict) {
-#pragma mark TODO
+            [LocationManager getMoLocationWithSuccess:^(double lat, double lng) {
+             
+                [LocationManager stop];
+                NSString * url =[NSString stringWithFormat:@"%@mall/search/nearmerchants?latitude=%.2f&longitude=%.2f&pageSize=50&pageIndex=1",httpHead,lat,lng];
+
+                [HttpRequest lrw_getWithURLString:url parameters:nil success:^(id responseObject) {
+                    [SVProgressHUD dismiss];
+                    if (responseObject) {
+                        NSArray *datas = responseObject[Data];
+                        if (datas.count) {
+                            for (int i =0; i<datas.count; i++) {
+                                nearMerchant  *model = [nearMerchant modelObjectWithDictionary:datas[i]];
+                                [weakSelf.nearMerchantModels addObject:model];
+                            }
+                            [weakSelf.nearbyMalltab reloadData];
+
+                        }else{
+                            [self alertWithString:@"无商家数据"];
+                        }
                     }
+
+
+
+                } failure:^(NSError *error,NSInteger code) {
+                     [SVProgressHUD dismiss];
+                    [weakSelf TipWithErrorCode:code];
+                }];
+            } Failure:^(NSError *error) {
+                 [SVProgressHUD dismiss];
+                if ([error code] == kCLErrorDenied) {
+                    [weakSelf alertWithString:@"获取定位失败,请到设置里打开定位"];
                 }
+                NSString * url =[NSString stringWithFormat:@"%@mall/search/nearmerchants?latitude=%.2f&longitude=%.2f&pageSize=50&pageIndex=1",httpHead,lati,longti];
                 
-                
-                
-                
-            } failure:^(NSError *error) {
+                [HttpRequest lrw_getWithURLString:url parameters:nil success:^(id responseObject) {
+                    [SVProgressHUD dismiss];
+                    if (responseObject) {
+                        NSArray *datas = responseObject[Data];
+                        if (datas.count) {
+                            for (int i =0; i<datas.count; i++) {
+                                nearMerchant  *model = [nearMerchant modelObjectWithDictionary:datas[i]];
+                                [weakSelf.nearMerchantModels addObject:model];
+                            }
+                            [weakSelf.nearbyMalltab reloadData];
+                            
+                        }else{
+                            [self alertWithString:@"无商家数据"];
+                        }
+                    }
+                    
+                    
+                    
+                } failure:^(NSError *error,NSInteger code) {
+                    [SVProgressHUD dismiss];
+                    [weakSelf TipWithErrorCode:code];
+                }];
+            }];
+            
+
+        }
+            break;
+            
+            
+           case mallTableType_baoyang:
+        {
+            NSString *url = [NSString stringWithFormat:@"%@mall/maintenancesuggestion/proucts?suggestionId=%d&pageSize=%d&pageIndex=%d",httpHead,_suggestId,50,1];
+            [HttpRequest lrw_getWithURLString:url parameters:nil success:^(id responseObject) {
+                 [SVProgressHUD dismiss];
+                NSArray *datas = responseObject[Data];
+                if (datas.count) {
+                    for (int i  =0 ; i <datas.count; i++) {
+                        Products  *model = [Products modelObjectWithDictionary:datas[i]];
+                        [weakSelf.productsModels addObject:model];
+                    }
+                    [weakSelf.adviceMallcoView reloadData];
+                }else{
+//                    [weakSelf alertWithString:@"没有商品"];
+                }
+            } failure:^(NSError *error, NSInteger errorCode) {
                 [SVProgressHUD dismiss];
-                [weakSelf alertWithString:@"附近商家请求错误"];
+                [weakSelf alertWithString:@"请求商品错误"];
+            }];
+        }
+            
+            break;
+            
+            case mallTableType_category:
+        {
+//            mall/search/categoryproucts?categoryId={categoryId}&pageSize={pageSize}&pageIndex={pageIndex}
+            NSString *url = [NSString stringWithFormat:@"%@mall/search/categoryproucts?categoryId=%d&pageSize=%d&pageIndex=%d",httpHead,_categoryId,50,1];
+            [HttpRequest lrw_getWithURLString:url parameters:nil success:^(id responseObject) {
+                [SVProgressHUD dismiss];
+                NSArray *datas = responseObject[Data];
+                if (datas.count) {
+                    for (int i  =0 ; i <datas.count; i++) {
+                        Products  *model = [Products modelObjectWithDictionary:datas[i]];
+                        [weakSelf.productsModels addObject:model];
+                    }
+                    [weakSelf.adviceMallcoView reloadData];
+                }else{
+                    //                    [weakSelf alertWithString:@"没有商品"];
+                }
+            } failure:^(NSError *error, NSInteger errorCode) {
+                [SVProgressHUD dismiss];
+                [weakSelf alertWithString:@"请求商品错误"];
             }];
         }
             break;
@@ -273,6 +396,37 @@
    
     
 }
+
+
+
+
+#pragma mark -- 添加到购物车
+-(void)addtoCartWithMall:(Products *)product{
+  
+    if (![[NSUserDefaults standardUserDefaults]boolForKey:ISLOGIN]) {
+        LoginViewController *logvc = [[LoginViewController alloc]init];
+        WeakSelf
+        logvc.loginCompelete = ^{
+            NSMutableDictionary *dict = @{@"ProductId":@((int)product.productId),@"Qty":@(1)}.mutableCopy;
+            [[EWKJRequest request]requestWithAPIId:cart2 httphead:nil bodyParaDic:dict completed:^(id datas) {
+                [weakSelf alertWithString:@"添加成功！"];
+            } error:^(NSError *error, NSInteger statusCode) {
+                [weakSelf alertWithString:@"添加到购物车失败"];
+            }];
+        };
+        [self.navigationController pushViewController:logvc animated:NO];
+    }else{
+        NSMutableDictionary *dict = @{@"ProductId":@((int)product.productId),@"Qty":@(1)}.mutableCopy;
+        WeakSelf
+        [[EWKJRequest request]requestWithAPIId:cart2 httphead:nil bodyParaDic:dict completed:^(id datas) {
+            [weakSelf alertWithString:@"添加成功！"];
+        } error:^(NSError *error, NSInteger statusCode) {
+            [weakSelf alertWithString:@"添加到购物车失败"];
+        }];
+    }
+}
+
+
 
 #pragma mark textfield dlegate
 -(BOOL)textFieldShouldReturn:(UITextField *)textField{
@@ -294,8 +448,7 @@
                     [self alertWithString:@"没有您搜索的商品！"];
                 }
             }
-        } fail:^(NSError *error) {
-            [self alertWithString:@"请求错误！"];
+        } fail:^(NSError *error,NSInteger code) {
         }];
         
         textField.text = nil;

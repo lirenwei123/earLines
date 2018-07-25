@@ -13,6 +13,7 @@
 #import "EWKJShare.h"
 #import "UIImage+drawImage.h"
 
+
 @interface AnalysisResultViewController ()<UITableViewDelegate,UITableViewDataSource>
 @property (weak, nonatomic) IBOutlet UIImageView *backGD;
 
@@ -34,9 +35,9 @@
     // Do any additional setup after loading the view from its nib.
 }
 -(void)addUI{
-    self.navigationTitle.text = @"分析结果";
+    self.navigationTitle.text =  _resultModel==nil?@"我的耳纹":@"分析结果";
     self.view.backgroundColor =RGB(255, 229, 225);
-    [self addRightBtnWithIMGname:@"nav_share"];
+   
    
     
     self.MaintenanceAdvice.backgroundColor = RGB(0xd7, 0x05, 0x01);
@@ -44,21 +45,67 @@
     self.NearbyMerchants.backgroundColor =  RGB(0xf3, 0x4e,0X22);
     self.NearbyMerchants.titleLabel.font = EWKJboldFont(16);
     
-    if (_resultModel) {
-       
-        _table = [[UITableView alloc]initWithFrame:CGRectMake(15, navigationBottom+10, SW-30, SH-navigationBottom-10-60)];
-        _table.backgroundColor = [UIColor whiteColor];
-        _table.separatorStyle = UITableViewCellSeparatorStyleNone;
-        _table.delegate = self;
-        _table.dataSource = self;
-        _table.clipsToBounds = YES;
-        _table.layer.cornerRadius = 3;
-        _table.showsVerticalScrollIndicator = NO;
-        _table.showsHorizontalScrollIndicator = NO;
-        [self.view addSubview:_table];
+    if (_resultModel == nil) {
+        [self requestMyearPrints];
+    }else{
+        [self addTabUI];
+        [self addRightBtnWithIMGname:@"nav_share"];
     }
+    
+
+       
+    
+    
 }
 
+
+-(void)addTabUI{
+    _table = [[UITableView alloc]initWithFrame:CGRectMake(15, navigationBottom+10, SW-30, SH-navigationBottom-10-60)];
+    _table.backgroundColor = [UIColor whiteColor];
+    _table.separatorStyle = UITableViewCellSeparatorStyleNone;
+    _table.delegate = self;
+    _table.dataSource = self;
+    _table.clipsToBounds = YES;
+    _table.layer.cornerRadius = 3;
+    _table.showsVerticalScrollIndicator = NO;
+    _table.showsHorizontalScrollIndicator = NO;
+    [self.view addSubview:_table];
+    [self addRightBtnWithIMGname:@"nav_share"];
+}
+
+-(void)requestMyearPrints{
+    [SVProgressHUD showWithStatus:@"正在导出您的耳纹"];
+    WeakSelf
+    [[EWKJRequest request]requestWithAPIId:ear2 httphead:nil bodyParaDic:nil completed:^(id datas) {
+         [SVProgressHUD dismiss];
+       weakSelf.resultModel = [analyseResult modelObjectWithDictionary:(NSDictionary*)datas[Data]];
+        if (weakSelf.resultModel.isEar) {
+            [weakSelf addTabUI];
+        }else{
+            [weakSelf haveNoEarPrints];
+        }
+       
+    } error:^(NSError *error, NSInteger statusCode) {
+        [SVProgressHUD dismiss];
+        [weakSelf TipWithErrorCode:statusCode];
+    }];
+}
+
+-(void)haveNoEarPrints{
+    UILabel *lab = [[UILabel alloc]initWithFrame:CGRectMake((SW-150)/2, navigationBottom+30, 150, 20)];
+    lab.text =@"您还没有分析耳纹!";
+    lab.textColor= COLOR(0x99);
+    lab.font = EWKJfont(12);
+    lab.textAlignment = NSTextAlignmentCenter;
+    [self.view addSubview:lab];
+    
+    UIView *linel = [[UIView alloc]initWithFrame:CGRectMake(CGRectGetMinX(lab.frame)-60, navigationBottom+40, 50, 1)];
+    linel.backgroundColor = COLOR(0xe3);
+    [self.view addSubview:linel];
+    UIView *liner = [[UIView alloc]initWithFrame:CGRectMake(CGRectGetMaxX(lab.frame)+10, navigationBottom+40, 50, 1)];
+    liner.backgroundColor =  COLOR(0xe3);
+    [self.view addSubview:liner];
+}
 #pragma mark -table代理
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
     return _resultModel.items.count +1;
@@ -71,13 +118,12 @@
             cell = [[analyzeResultCell alloc]initWithType:cellTypeScore];
         }
         cell.resultModel = _resultModel;
-        cell.imgv.image = self.ewImg;
         cell.cellItem = [[analyseResultViewModel alloc]initWithScoreWith:_resultModel.internalBaseClassDescription];
     }else{
         if (!cell) {
             cell = [[analyzeResultCell alloc]initWithType:cellTypeContent];
-            cell.cellItem = [[analyseResultViewModel alloc]initWithContentWith:_resultModel.items[indexPath.row-1]];
         }
+        cell.cellItem = [[analyseResultViewModel alloc]initWithContentWith:_resultModel.items[indexPath.row-1]];
     }
     
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
@@ -169,21 +215,30 @@
     if (!snapShort) {
         return;
     }
-    NSData *data = UIImagePNGRepresentation(snapShort);
-    [[EWKJShare share]shareWithJSHAREPlatform:form imgData:data complete:^(JSHAREState state, NSError *error) {
+   
+    JSHAREMessage *message = [JSHAREMessage message];
+    message.mediaType = JSHARELink;
+    message.url = _resultModel.shareLink;
+    message.text = _resultModel.shareContent;
+    message.title = _resultModel.shareTitle;
+    message.platform = form;
+    NSString *imageURL = _resultModel.shareLogo;
+    NSData *imageData = [NSData dataWithContentsOfURL:[NSURL URLWithString:imageURL]];
+    message.image = imageData;
+
+    [[EWKJShare share]shareLinkWithJSHAREPlatform:form JSHAREMessage:message complete:^(JSHAREState state, NSError *error) {
         if (error) {
             [weakSelf alertWithString:[NSString stringWithFormat:@"%@",error]];
         }else{
             
         }
     }];
-   
-    
-    
 }
+     
+     
 - (IBAction)MaintenanceAdviceClick:(UIButton *)sender {
     maintenanceAdviceCtrl * maintenanceAdvice = [[maintenanceAdviceCtrl alloc]init];
-    maintenanceAdvice.suggestID = (NSInteger)self.resultModel.suggestionId;
+    maintenanceAdvice.suggestID = (int)self.resultModel.suggestionId;
     [self.navigationController pushViewController:maintenanceAdvice animated:NO];
 }
 - (IBAction)NearbyMerchantsClick:(UIButton *)sender {

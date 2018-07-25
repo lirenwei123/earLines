@@ -7,6 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "nearMerchant.h"
 
 @interface merchantCell : UITableViewCell
 @property (weak, nonatomic) IBOutlet UIImageView *imgv;
@@ -14,7 +15,7 @@
 
 @property (weak, nonatomic) IBOutlet UILabel *adressLab;
 
-
+@property(nonatomic,strong)nearMerchant *item;
 
 
 

@@ -11,8 +11,8 @@
 #import "MyOrderCtrl.h"
 #import "MyShoppingCartCtrl.h"
 #import "MyCollectionCtrl.h"
-#import "MyOrderAddressCtrl.h"
-#import "MyEarLinesTestedCtrl.h"
+#import "AnalysisResultViewController.h"
+#import "UIImageView+WebCache.h"
 
 
 
@@ -20,6 +20,9 @@
 @property(nonatomic,strong)NSArray * classSrings;
 @property(nonatomic,strong)UIImageView *head;
 @property(nonatomic,strong)UILabel *nickLab;
+
+@property(nonatomic,strong)UILabel *cartMallCountLab;
+@property(nonatomic,strong)UILabel *pointScoreLab;
 @end
 
 typedef NS_ENUM(NSUInteger, PERSONALCENTER_FUNCTION) {
@@ -43,6 +46,30 @@ typedef NS_ENUM(NSUInteger, PERSONALCENTER_FUNCTION) {
 
 }
 
+#pragma  mark - 获取购物车商品数量
+
+-(void)requestCartMallCount
+{
+    WeakSelf
+    [[EWKJRequest request]requestWithAPIId:cart1 httphead:nil bodyParaDic:nil completed:^(id datas) {
+        NSNumber *count = datas[Data][@"Quantity"];
+        weakSelf.cartMallCountLab.text =  [NSString stringWithFormat:@"%@",count] ;
+                                             
+    } error:^(NSError *error, NSInteger statusCode) {
+//        [weakSelf alertWithString:@"获取购物车商品数量失败"];
+    }];
+}
+-(void)requestPointScore{
+    WeakSelf
+    [[EWKJRequest request]requestWithAPIId:user2 httphead:nil bodyParaDic:nil completed:^(id datas) {
+        NSDictionary *dict = datas[Data];;
+        CGFloat  score = [[dict objectForKey:@"UserPoints"] floatValue];
+        weakSelf.pointScoreLab.text = [NSString stringWithFormat:@"%.2f",score];
+    } error:^(NSError *error, NSInteger statusCode) {
+        
+    }];
+}
+
 -(void)viewWillAppear:(BOOL)animated{
     if ([USERBaseClass user].imageUrl.length) {
         NSURL *imgurl = [NSURL URLWithString:[USERBaseClass user].imageUrl];
@@ -54,10 +81,16 @@ typedef NS_ENUM(NSUInteger, PERSONALCENTER_FUNCTION) {
     if ([USERBaseClass user].nickName.length){
         _nickLab.text = [USERBaseClass user].nickName;
     }
+   else
+        _nickLab.text =  [USERBaseClass user].account;
     
+    
+    [self requestCartMallCount];
+    [self requestPointScore];
 }
 
 -(void)addUI{
+ 
     self.navigationTitle.text = @"个人中心";
     self.view.backgroundColor = COLOR(0xde);
 
@@ -78,7 +111,16 @@ typedef NS_ENUM(NSUInteger, PERSONALCENTER_FUNCTION) {
     [self.view addSubview:topBG];
     
     UIImageView *imgv = [[UIImageView alloc]initWithFrame:CGRectMake(15, (h-w)/2, w,w)];
-    imgv.image = [UIImage imageNamed:@"Head_portrait"];
+    imgv.clipsToBounds = YES;
+    imgv.layer.cornerRadius = w/2;
+    NSString *imgurl = [USERBaseClass user].imageUrl;
+    
+    if (imgurl.length) {
+        [imgv sd_setImageWithURL:[NSURL URLWithString:imgurl] placeholderImage:[UIImage imageNamed:@"Head_portrait"]];
+    }else{
+        
+        imgv.image = [UIImage imageNamed:@"Head_portrait"];
+    }
     _head = imgv;
     [topBG addSubview:imgv];
     
@@ -101,10 +143,13 @@ typedef NS_ENUM(NSUInteger, PERSONALCENTER_FUNCTION) {
     lable.textColor =  [UIColor whiteColor];
     [topBG addSubview:lable];
     
-    UILabel *jifen =[[UILabel alloc]initWithFrame:CGRectMake(SW-50, h/2, 50, w/2)];
+    
+    UILabel *jifen =[[UILabel alloc]initWithFrame:CGRectMake(SW-150, h/2, 130, w/2)];
     jifen.textColor= [UIColor whiteColor];
+    jifen.textAlignment = NSTextAlignmentRight;
     jifen.text = @"0.00";
     [topBG addSubview:jifen];
+    _pointScoreLab = jifen;
     
 }
 
@@ -113,11 +158,11 @@ typedef NS_ENUM(NSUInteger, PERSONALCENTER_FUNCTION) {
     CGFloat top  = 101 +navigationBottom;
     CGFloat h = 44;
     
-    NSArray *names = @[@"我的订单",@"查看全部订单",@"待付款",@"待发货",@"待收货",@"待退货",@"我的购物车",@"我的耳纹",@"我的收藏",@"联系地址",@"个人资料"];
-    NSArray *imgnames =@[@"Personal_Center_Shopping",@"Personal_l",@"Personal_Center_icon_1",@"Personal_Center_icon_2",@"Personal_Center_icon_3",@"Personal_Center_icon_4",@"Personal_Center_list_1@2x",@"Personal_Center_list_2",@"Personal_Center_list_3",@"landmark",@"Personal_Center_list_5"];
-      _classSrings = @[@"MyOrderCtrl",@"MyOrderCtrl",@"MyOrderCtrl",@"MyOrderCtrl",@"MyOrderCtrl",@"MyShoppingCartCtrl",@"MyEarLinesTestedCtrl",@"MyCollectionCtrl",@"MyOrderAddressCtrl",@"PersonalDataCtrl"];
+    NSArray *names = @[@"我的订单",@"查看全部订单",@"待付款",@"待发货",@"待收货",@"待退货",@"我的购物车",@"我的耳纹",@"我的收藏",@"联系地址",@"个人资料",@"我的推荐",@"积分明细",@"系统消息",@"版本信息"];
+    NSArray *imgnames =@[@"Personal_Center_Shopping",@"Personal_l",@"Personal_Center_icon_1",@"Personal_Center_icon_2",@"Personal_Center_icon_3",@"Personal_Center_icon_4",@"Personal_Center_list_1@2x",@"Personal_Center_list_2",@"Personal_Center_list_3",@"landmark",@"Personal_Center_list_5",@"recommend_Center_icon_4",@"integral_Center_icon_4",@"mage_Center_icon_3",@"Personal_Center_icon_50"];
+      _classSrings = @[@"MyOrderCtrl",@"MyOrderCtrl",@"MyOrderCtrl",@"MyOrderCtrl",@"MyOrderCtrl",@"MyShoppingCartCtrl",@"AnalysisResultViewController",@"MyCollectionCtrl",@"AddressViewController",@"PersonalDataCtrl",@"MineAdviceViewController",@"ScoreDetailViewController",@"SystemMessageCtrl"];
     
-    UIView *bg =  [[UIView alloc]initWithFrame:CGRectMake(0, top, SW, 44+88+5*42)];
+    UIView *bg =  [[UIView alloc]initWithFrame:CGRectMake(0, top, SW, 44+88+(names.count-6) *42)];
     bg.backgroundColor = [UIColor whiteColor];
     [self.view addSubview:bg];
 
@@ -127,6 +172,8 @@ typedef NS_ENUM(NSUInteger, PERSONALCENTER_FUNCTION) {
     myOrder.tag = PERSONALCENTER_FUNCTION_MYORDER;
     [bg addSubview:myOrder];
     EWKJBtn *allOrder = [[EWKJBtn alloc]initWithFrame:CGRectMake(SW-150, 0, 135, h) img:[UIImage imageNamed:imgnames[1]] title:names[1] touchEvent:nil andbtnType:BTNTYPERL];
+    CGRect frame1 = allOrder.imgv.frame;
+    allOrder.imgv.frame = CGRectMake(frame1.origin.x, (allOrder.frame.size.height-15)/2, 10, 15);
     [bg addSubview:allOrder];
     UIView *line = [[UIView alloc]initWithFrame:CGRectMake(0, top+h-1, SW, 1)];
     line.backgroundColor = COLOR(0xde);
@@ -143,7 +190,7 @@ typedef NS_ENUM(NSUInteger, PERSONALCENTER_FUNCTION) {
     
     top  = h;
     CGFloat w = SW/4;
-     h = 88;
+     h = 78;
     for (int i = 2; i<6; i++) {
         EWKJBtn *wait = [[EWKJBtn alloc]initWithFrame:CGRectMake((i-2)*w, top, w, h) img:[UIImage imageNamed:imgnames[i]] title:names[i] touchEvent:^(EWKJBtn *btn) {
             [weakSelf clickWithFunction:btn.tag];
@@ -168,13 +215,20 @@ typedef NS_ENUM(NSUInteger, PERSONALCENTER_FUNCTION) {
         BTNTYPE type = BTNTYPEEWKJ_personalCenter;
         if (i == 6) {
             type = BTNTYPEEWKJ_personalCenter_rightdetail;
+        }else if (i == names.count-1){
+            type = BTNTYPEEWKJ_personalCenterTextOnly;
         }
         EWKJBtn *personThing = [[EWKJBtn alloc]initWithFrame:CGRectMake(15, top+(i-6)*h, SW-30, h) img:[UIImage imageNamed:imgnames[i]] title:names[i] touchEvent:^(EWKJBtn *btn) {
             [weakSelf clickWithFunction:btn.tag];
         } andbtnType:type];
-        
+        if (type == BTNTYPEEWKJ_personalCenterTextOnly) {
+            personThing.rightDetailLab.text = @"V1.01";
+            personThing.rightDetailLab.textColor = [UIColor grayColor];
+        }
+        personThing.imgv.contentMode = UIViewContentModeScaleAspectFit;
         if (type == BTNTYPEEWKJ_personalCenter_rightdetail) {
-            personThing.rightDetailLab.text = @"3";
+            personThing.rightDetailLab.text = @"0";
+            _cartMallCountLab = personThing.rightDetailLab;
         }
         personThing.tag = functionTag++;
         [bg addSubview:personThing];
@@ -202,7 +256,7 @@ typedef NS_ENUM(NSUInteger, PERSONALCENTER_FUNCTION) {
             EWKJBaseViewController * Ctrl = [[CtrlClass alloc]init];
             if([Ctrl isKindOfClass:[MyOrderCtrl class]]){
                 MyOrderCtrl *order = (MyOrderCtrl*)Ctrl;
-                order.orderState = (OrderState)function;
+                order.orderState = (OrderState)classIndex;
             }
             
             Ctrl.title = classString;

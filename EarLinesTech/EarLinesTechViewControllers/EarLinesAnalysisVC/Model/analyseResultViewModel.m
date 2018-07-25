@@ -14,17 +14,15 @@
 {
     self = [super init];
     if (self) {
-        _content =  [NSString stringWithFormat:@"        %@",content];
+        _content =  content;
             //适配高度
       
       
                 
         
                 _contentHeight = [_content boundingRectWithSize:CGSizeMake(SW-130, MAXFLOAT) options:NSStringDrawingUsesLineFragmentOrigin|NSStringDrawingUsesFontLeading attributes:@{NSFontAttributeName:EWKJfont(12)} context:nil].size.height;
-                _cellHeight  =   _contentHeight + 55;
-                if (_cellHeight<110) {
-                    _cellHeight = 110;
-                }
+                _cellHeight  =   _contentHeight + 55+150;
+        
     }
     return self;
 }
@@ -35,11 +33,12 @@
     self = [super init];
     if (self) {
         _title = item.subject;
-        _content = [NSString stringWithFormat:@"        %@",item.body];
+        _content = [NSString stringWithFormat:@"\t%@",item.body];
+        _ImgUrl = item.imageUrl;
             //适配高度
      
                 _contentHeight = [_content boundingRectWithSize:CGSizeMake(SW-40, MAXFLOAT) options:NSStringDrawingUsesLineFragmentOrigin|NSStringDrawingUsesFontLeading attributes:@{NSFontAttributeName:EWKJfont(12)} context:nil].size.height;
-                _cellHeight  =   _contentHeight + 70+20;
+                _cellHeight  =   _contentHeight + 30+30+300;
         
     }
     return self;

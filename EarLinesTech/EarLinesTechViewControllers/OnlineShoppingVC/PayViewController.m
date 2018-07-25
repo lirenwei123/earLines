@@ -16,6 +16,7 @@
 #import "WechatAuthSDK.h"
 #import "UIAlertView+WX.h"
 #import "PayResultViewController.h"
+#import "UIButton+lrwButton.h"
 #import <AlipaySDK/AlipaySDK.h>
 
 @interface PayViewController ()
@@ -30,7 +31,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-    [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(PAYSUCCESS) name:@"PAYSUCCESS" object:nil];
+    [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(WXSuccess) name:@"WXSuccess" object:nil];
 }
 -(void)addUI{
     _PaymentMethod = PaymentMethod_noSelect;// 默认值
@@ -247,7 +248,7 @@
 }
 
 
--(void)PAYSUCCESS{
+-(void)WXSuccess{
     PayResultViewController *payRes = [[PayResultViewController alloc]init];
     payRes.payMoney = _money;
     [self.navigationController pushViewController:payRes animated:NO];

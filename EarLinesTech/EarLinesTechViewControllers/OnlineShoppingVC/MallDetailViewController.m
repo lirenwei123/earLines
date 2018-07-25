@@ -10,6 +10,12 @@
 #import "UIImageView+WebCache.h"
 #import "UIImage+WebP.h"
 #import "merchantCell.h"
+#import "MerchantDataModels.h"
+#import "MerchantDetailViewController.h"
+#import "MyShoppingCartCtrl.h"
+#import "PayViewController.h"
+#import "MallDetailModel.h"
+
 
 @interface MallDetailViewController ()<UIScrollViewDelegate>
 @property(nonatomic,strong)UIScrollView *bgSc;//总滚动
@@ -19,6 +25,8 @@
 @property(nonatomic,assign)NSInteger SCcurrentPage;
 @property(nonatomic,strong)UILabel *buyCountLab;
 @property(nonatomic,assign)NSInteger currentBuyCount;
+
+@property(nonatomic,strong)MallDetailModel *detailModel;
 @end
 
 @implementation MallDetailViewController
@@ -26,9 +34,25 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
+    [self requestDetail];
 }
 
--(void)addUI{
+#pragma mark - 请求商品详情
+-(void)requestDetail{
+    WeakSelf
+    [HttpRequest lrw_getWithURLString:[NSString stringWithFormat:@"%@mall/product/detail?productId=%d",httpHead,_productID] parameters:nil success:^(id responseObject) {
+        if (responseObject) {
+            NSDictionary *dict = responseObject[Data];
+            weakSelf.detailModel = [MallDetailModel modelObjectWithDictionary:dict];
+            [weakSelf loadUI];
+        }
+    } failure:^(NSError *error,NSInteger code) {
+        [weakSelf TipWithErrorCode:code];
+        
+    }];
+}
+
+-(void)loadUI{
     if (_detailModel == nil) {
         return;
     }
@@ -130,12 +154,21 @@
     CGFloat top = 520;
     for (int i =0 ; i< _detailModel.productDetailImages.count; i++) {
         NSString *imgurl = _detailModel.productDetailImages[i];
-        float rate = [self imageHWRateWithimgDes:imgurl];
+        
+//        float rate = [self imageHWRateWithimgDes:imgurl];
+        
+        UIImage *image = [[UIImage alloc]initWithData:[NSData dataWithContentsOfURL:[NSURL URLWithString:imgurl]]];
+        float rate = image.size.height/image.size.width;
+        
         CGFloat h = SW*rate;
         UIImageView *detailImgV = [[UIImageView alloc]initWithFrame:CGRectMake(0, top, SW, h)];
-        [detailImgV sd_setImageWithURL:[NSURL URLWithString:imgurl]];
+//        [detailImgV sd_setImageWithURL:[NSURL URLWithString:imgurl]];
+        detailImgV.image = image;
         [_bgSc addSubview:detailImgV];
         top +=(h+10);
+        
+       
+        
     }
     _bgSc.contentSize = CGSizeMake(SW, top+20);
     
@@ -155,8 +188,13 @@
     WeakSelf
     //收藏
     EWKJBtn *favirate = [[EWKJBtn alloc]initWithFrame:CGRectMake(15, CGRectGetMaxY(line.frame)+5, 45, 43) img:[UIImage imageNamed:@"Personal_Center_list_3"] title:@"收藏" touchEvent:^(EWKJBtn *btn) {
-        [weakSelf favirate];
+        [weakSelf favirateWithBtn:btn];
     } andbtnType:BTNTYPEUD];
+    favirate.tag = 10;
+    if (_detailModel.favoriteInd) {
+        favirate.lab.text = @"取消收藏";
+          favirate.tag = 20;
+    }
     favirate.lab.font =EWKJfont(11);
     favirate.lab.textColor = COLOR(0x66);
     [self.view addSubview:favirate];
@@ -320,23 +358,101 @@
 
 #pragma mark - 购物车
 -(void)rightNavitemCLick{
-    
+    if (![[NSUserDefaults standardUserDefaults]boolForKey:ISLOGIN]) {
+        LoginViewController *logvc = [[LoginViewController alloc]init];
+        WeakSelf
+        logvc.loginCompelete = ^{
+            MyShoppingCartCtrl *cartVC = [[MyShoppingCartCtrl alloc]init];
+            [weakSelf.navigationController pushViewController:cartVC animated:NO];
+        };
+        [self.navigationController pushViewController:logvc animated:NO];
+    }else{
+        MyShoppingCartCtrl *cartVC = [[MyShoppingCartCtrl alloc]init];
+        [self.navigationController pushViewController:cartVC animated:NO];
+    }
 }
 
--(void)favirate{
-    
+-(void)favirateWithBtn:(EWKJBtn*)sender{
+    if (sender.tag == 20) {
+        //取消收藏
+       
+        NSArray *productIds = [NSArray arrayWithObjects:@(_detailModel.productId), nil];
+        
+        WeakSelf
+        [HttpRequest lirw_postWithURLString:[NSString stringWithFormat:@"%@mall/product/favorite/remove",httpHead] parameters:@{Data:productIds}.mutableCopy success:^(id responseObject) {
+            if ([responseObject[@"Status"]isEqualToString:@"ok"]) {
+//                [weakSelf alertWithString:@"删除收藏成功！"];
+                sender.lab.text = @"收藏";
+                sender.tag = 10;
+            }
+        } failure:^(NSError *error,NSInteger code) {
+            [weakSelf TipWithErrorCode:code];
+        }];
+        
+    }else{
+         //收藏
+        NSDictionary *param = [NSDictionary dictionaryWithObjectsAndKeys:[NSString stringWithFormat:@"%.0f",_detailModel.productId],@"ProductId",@1,@"FavoriteInd", nil];
+        
+        WeakSelf
+        [HttpRequest lirw_postWithURLString:[NSString stringWithFormat:@"%@mall/product/favorite",httpHead] parameters:@{Data:param}.mutableCopy success:^(id responseObject) {
+            if ([responseObject[@"Status"]isEqualToString:@"ok"]) {
+//                [weakSelf alertWithString:@"收藏成功！"];
+                sender.lab.text = @"取消收藏";
+                sender.tag = 20;
+            }
+        } failure:^(NSError *error,NSInteger code) {
+            [weakSelf TipWithErrorCode:code];
+        }];
+    }
 }
 
 -(void)house{
     
+    WeakSelf
+     MerchantDetailViewController *merchantVC = [[MerchantDetailViewController alloc]init];
+    merchantVC.merchantId = (int)_detailModel.merchantId;
+    [self.navigationController pushViewController:merchantVC animated:NO];
 }
 
 -(void)addCart{
+
+    if (![[NSUserDefaults standardUserDefaults]boolForKey:ISLOGIN]) {
+        LoginViewController *logvc = [[LoginViewController alloc]init];
+        logvc.loginCompelete = ^{
+            NSMutableDictionary *dict = @{@"ProductId":@((int)_detailModel.productId),@"Qty":@(_currentBuyCount)}.mutableCopy;
+            WeakSelf
+            [[EWKJRequest request]requestWithAPIId:cart2 httphead:nil bodyParaDic:dict completed:^(id datas) {
+                [weakSelf alertWithString:@"添加成功！"];
+            } error:^(NSError *error, NSInteger statusCode) {
+                [weakSelf alertWithString:@"添加到购物车失败"];
+            }];
+        };
+        [self.navigationController pushViewController:logvc animated:NO];
+    }else{
     
+        NSMutableDictionary *dict = @{@"ProductId":@((int)_detailModel.productId),@"Qty":@(_currentBuyCount)}.mutableCopy;
+        WeakSelf
+        [[EWKJRequest request]requestWithAPIId:cart2 httphead:nil bodyParaDic:dict completed:^(id datas) {
+            [weakSelf alertWithString:@"添加成功！"];
+        } error:^(NSError *error, NSInteger statusCode) {
+            [weakSelf alertWithString:@"添加到购物车失败"];
+        }];
+    }
 }
 
 -(void)buy{
-    
+    if (![[NSUserDefaults standardUserDefaults]boolForKey:ISLOGIN]) {
+        LoginViewController *logvc = [[LoginViewController alloc]init];
+        WeakSelf
+        logvc.loginCompelete = ^{
+            PayViewController *pay = [[PayViewController alloc]init];
+            [weakSelf.navigationController pushViewController:pay animated:NO];
+        };
+        [self.navigationController pushViewController:logvc animated:NO];
+    }else{
+    PayViewController *pay = [[PayViewController alloc]init];
+    [self.navigationController pushViewController:pay animated:NO];
+    }
 }
 
 -(void)sure{

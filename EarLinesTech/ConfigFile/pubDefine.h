@@ -54,6 +54,7 @@
 #define navigationBottom   (statusBarHeight + 44)
 #define bottomHeight (statusBarHeight>20?34:0)
 
+
 #define WeakSelf __weak typeof(self) weakSelf = self;
 
 #define COLOR(x) [UIColor colorWithRed:(x/256.0) green:(x/256.0) blue:(x/256.0) alpha:1]
@@ -62,14 +63,18 @@
 
 #define DOCPATH NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES).firstObject
 #define USERINFOPATH [DOCPATH stringByAppendingPathComponent:@"userinfo"]
-
+#define COUNTRYPATH [DOCPATH stringByAppendingPathComponent:@"CountriesFile"]
+#define HAVECOUNTRYFILE @"HAVECOUNTRYFILE"
 //登录状态， 在登录成功回调里赋值yes
 #define ISLOGIN  @"islogin"
 
-static float LAT;//纬度
-static float LNG;//经度
 
+
+//static NSString * httpHead = @"http://api.earprinttechnology.com/api/";
 static NSString * httpHead = @"http://em-webapi.zhiyunhulian.cn/api/";
 static NSString *Data = @"Data";
 
+static float lati = 114.02;
+static float longti = 22.454;
+//￥
 #endif /* pubDefine_h */

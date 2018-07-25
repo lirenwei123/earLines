@@ -18,4 +18,7 @@
 //分享图片
 -(void)shareWithJSHAREPlatform:(JSHAREPlatform)platform imgData:(NSData *)data complete:(void(^)(JSHAREState state, NSError *error))complete;
 
+
+-(void)shareLinkWithJSHAREPlatform:(JSHAREPlatform)platform JSHAREMessage:(JSHAREMessage*)message complete:(void(^)(JSHAREState state, NSError *error))complete;
+
 @end

@@ -11,6 +11,7 @@
 
 @interface MallDetailViewController : EWKJBaseViewController
 
-@property(nonatomic,strong)MallDetailModel *detailModel;
+
+@property(nonatomic,assign)int productID;
 
 @end

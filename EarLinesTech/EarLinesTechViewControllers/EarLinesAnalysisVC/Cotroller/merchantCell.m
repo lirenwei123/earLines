@@ -7,6 +7,7 @@
 //
 
 #import "merchantCell.h"
+#import "UIImageView+WebCache.h"
 
 @implementation merchantCell
 
@@ -34,6 +35,14 @@
 
 +(instancetype)cell{
     return [[NSBundle mainBundle]loadNibNamed:NSStringFromClass([self class]) owner:nil options:nil].firstObject;
+}
+
+- (void)setItem:(nearMerchant *)item{
+    _item= item;
+
+    [_imgv sd_setImageWithURL:[NSURL URLWithString:_item.imageUrl]];
+    _describleLab.text = _item.merchantName;
+    _adressLab.text = [NSString stringWithFormat:@"%@ %@",_item.streetName,_item.distance];
 }
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {

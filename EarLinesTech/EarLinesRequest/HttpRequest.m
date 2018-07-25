@@ -33,11 +33,12 @@
             manager.requestSerializer = [AFJSONRequestSerializer serializer];
             [manager.requestSerializer setValue:@"application/json" forHTTPHeaderField:@"content-type"];
             [manager.requestSerializer setValue:@"earLinesTech" forHTTPHeaderField:@"ClientId"];
-            [manager.requestSerializer setValue:@" " forHTTPHeaderField:@"Uuid"];
+            [manager.requestSerializer setValue:@"0963046d-ea54-433a-b966-8844e0117647" forHTTPHeaderField:@"Uuid"];
            
           
             
            manager.responseSerializer = [AFHTTPResponseSerializer serializer];
+            manager.responseSerializer.acceptableContentTypes = [NSSet setWithObjects:@"application/json", @"text/json", @"text/javascript",@"text/plain", nil];
             /**
              *  请求队列的最大并发数
              */
@@ -172,7 +173,7 @@ uploadParam:(UploadParam *)uploadParam success:(void (^)(id responseObject))succ
 }
 
     
-    +(void)lirw_uploadWithURLString:(NSString *)URLString parameters:(NSMutableDictionary *)parameters uploadParams:(NSArray<UploadParam *> *)uploadParams success:(void (^)(id))success failure:(void (^)(NSError *))failure{
+    +(void)lirw_uploadWithURLString:(NSString *)URLString parameters:(NSMutableDictionary *)parameters uploadParams:(NSArray<UploadParam *> *)uploadParams success:(void (^)(id))success failure:(void (^)(NSError *,NSInteger errorCode))failure{
         
 //        [HttpRequest shareManager].requestSerializer.timeoutInterval = 10.f;
         [[HttpRequest shareManager] POST:URLString parameters:parameters constructingBodyWithBlock:^(id<AFMultipartFormData>  _Nonnull formData)
@@ -196,13 +197,14 @@ uploadParam:(UploadParam *)uploadParam success:(void (^)(id responseObject))succ
              }
          } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
              if (failure) {
-                 failure(error);
+                 NSHTTPURLResponse *response = (NSHTTPURLResponse*)task.response;
+                 failure(error,response.statusCode);
              }
          }];
     }
     
     
-+ (void)lirw_postWithURLString:(NSString *)URLString parameters:(NSMutableDictionary *)parameters success:(void (^)(id))success failure:(void (^)(NSError *))failure{
++ (void)lirw_postWithURLString:(NSString *)URLString parameters:(NSMutableDictionary *)parameters success:(void (^)(id))success failure:(void (^)(NSError *,NSInteger errorCode))failure{
     [[HttpRequest shareManager] POST:URLString parameters:parameters progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         if (success) {
 #ifdef DEBUG_MODE
@@ -214,12 +216,14 @@ uploadParam:(UploadParam *)uploadParam success:(void (^)(id responseObject))succ
         }
         
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+        NSHTTPURLResponse *response = (NSHTTPURLResponse*)task.response;
         if (failure) {
-            failure(error);
+            NSHTTPURLResponse *response = (NSHTTPURLResponse*)task.response;
+            failure(error,response.statusCode);
         }
     }];
 }
-+(void)lrw_getWithURLString:(NSString *)URLString parameters:(NSMutableDictionary *)parameters success:(void (^)(id))success failure:(void (^)(NSError *))failure{
++(void)lrw_getWithURLString:(NSString *)URLString parameters:(NSMutableDictionary *)parameters success:(void (^)(id))success failure:(void (^)(NSError *,NSInteger errorCode))failure{
     [[HttpRequest shareManager] GET:URLString parameters:parameters progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         if (success) {
 #ifdef DEBUG_MODE
@@ -230,16 +234,15 @@ uploadParam:(UploadParam *)uploadParam success:(void (^)(id responseObject))succ
             success(obj);
         }
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-        if (failure) {
-            failure(error);
-        }
+        NSHTTPURLResponse *response = (NSHTTPURLResponse*)task.response;
+        failure(error,response.statusCode);
     }];
 }
-+(void)lrw_requestWithURLString:(NSString *)URLString parameters:(NSMutableDictionary *)parameters type:(HttpRequestType)type success:(void (^)(id))success failure:(void (^)(NSError *))failure{
++(void)lrw_requestWithURLString:(NSString *)URLString parameters:(NSMutableDictionary *)parameters type:(HttpRequestType)type success:(void (^)(id))success failure:(void (^)(NSError *,NSInteger errorCode))failure{
     switch (type) {
         case HttpRequestTypeGet:
         {
-            [[HttpRequest shareManager] POST:URLString parameters:parameters progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+            [[HttpRequest shareManager] GET:URLString parameters:parameters progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
                 if (success) {
 #ifdef DEBUG_MODE
                     NSString *str = [[NSString alloc]initWithData:responseObject encoding:NSUTF8StringEncoding];
@@ -250,9 +253,8 @@ uploadParam:(UploadParam *)uploadParam success:(void (^)(id responseObject))succ
                 }
                 
             } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-                if (failure) {
-                    failure(error);
-                }
+                NSHTTPURLResponse *response = (NSHTTPURLResponse*)task.response;
+                failure(error,response.statusCode);
             }];
         }
             break;
@@ -270,9 +272,8 @@ uploadParam:(UploadParam *)uploadParam success:(void (^)(id responseObject))succ
                 }
                 
             } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-                if (failure) {
-                    failure(error);
-                }
+                NSHTTPURLResponse *response = (NSHTTPURLResponse*)task.response;
+                failure(error,response.statusCode);
             }];
         }
             break;
@@ -289,9 +290,8 @@ uploadParam:(UploadParam *)uploadParam success:(void (^)(id responseObject))succ
                     success(obj);
                 }
             } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-                if (failure) {
-                    failure(error);
-                }
+                NSHTTPURLResponse *response = (NSHTTPURLResponse*)task.response;
+                failure(error,response.statusCode);
             }];
         }
             break;

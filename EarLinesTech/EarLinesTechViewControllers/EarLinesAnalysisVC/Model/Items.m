@@ -10,6 +10,7 @@
 
 NSString *const kItemsSubject = @"Subject";
 NSString *const kItemsBody = @"Body";
+NSString *const kItemsImageUrl1 = @"ImageUrl";
 
 
 @interface Items ()
@@ -22,6 +23,7 @@ NSString *const kItemsBody = @"Body";
 
 @synthesize subject = _subject;
 @synthesize body = _body;
+@synthesize imageUrl = _imageUrl;
 
 
 + (instancetype)modelObjectWithDictionary:(NSDictionary *)dict {
@@ -36,7 +38,7 @@ NSString *const kItemsBody = @"Body";
     if (self && [dict isKindOfClass:[NSDictionary class]]) {
             self.subject = [self objectOrNilForKey:kItemsSubject fromDictionary:dict];
             self.body = [self objectOrNilForKey:kItemsBody fromDictionary:dict];
-
+        self.imageUrl = [self objectOrNilForKey:kItemsImageUrl1 fromDictionary:dict];
     }
     
     return self;
@@ -47,7 +49,7 @@ NSString *const kItemsBody = @"Body";
     NSMutableDictionary *mutableDict = [NSMutableDictionary dictionary];
     [mutableDict setValue:self.subject forKey:kItemsSubject];
     [mutableDict setValue:self.body forKey:kItemsBody];
-
+    [mutableDict setValue:self.imageUrl forKey:kItemsImageUrl1];
     return [NSDictionary dictionaryWithDictionary:mutableDict];
 }
 
@@ -69,6 +71,7 @@ NSString *const kItemsBody = @"Body";
 
     self.subject = [aDecoder decodeObjectForKey:kItemsSubject];
     self.body = [aDecoder decodeObjectForKey:kItemsBody];
+    self.imageUrl = [aDecoder decodeObjectForKey:kItemsImageUrl1];
     return self;
 }
 
@@ -77,6 +80,7 @@ NSString *const kItemsBody = @"Body";
 
     [aCoder encodeObject:_subject forKey:kItemsSubject];
     [aCoder encodeObject:_body forKey:kItemsBody];
+    [aCoder encodeObject:_imageUrl forKey:kItemsImageUrl1];
 }
 
 - (id)copyWithZone:(NSZone *)zone {
@@ -88,6 +92,7 @@ NSString *const kItemsBody = @"Body";
 
         copy.subject = [self.subject copyWithZone:zone];
         copy.body = [self.body copyWithZone:zone];
+        copy.imageUrl = [self.imageUrl copyWithZone:zone];
     }
     
     return copy;

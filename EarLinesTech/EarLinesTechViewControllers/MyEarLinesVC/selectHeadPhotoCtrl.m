@@ -43,11 +43,9 @@
     
     
     //增加右上角菜单
-   self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"选择照片"
-                                                             style:UIBarButtonItemStylePlain
-                                                            target:self
-                                                            action:@selector(changePhoto)];
-    self.navigationItem.rightBarButtonItem.tintColor = [UIColor whiteColor];
+    
+    [self addRightBtnWithtitle:@"选择照片"];
+  
     
     
 
@@ -55,7 +53,7 @@
     
 }
 
--(void)changePhoto{
+-(void)rightNavitemCLick{
     UIAlertController *alerVC = [[UIAlertController alloc]init];
     UIAlertAction *photoAction = [UIAlertAction actionWithTitle:@"拍照" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
         if([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]){
@@ -91,32 +89,63 @@
         if (_changeHead) {
             _changeHead(img);
         }
+        
+        
         UIImageView *imgv = [self.view viewWithTag:100];
         imgv.image = img;
         //网络上传
+        //处理下图片大小
+        UIImage *useImg = [self reSizeImage:img toSize:CGSizeMake(SW, SW*img.scale)];
         UploadParam *upImg = [[UploadParam alloc]init];
-        upImg.data = UIImagePNGRepresentation(img);
+        upImg.data = UIImagePNGRepresentation(useImg);
         upImg.name = @"head";
         upImg.filename = @"head.png";
         upImg.mimeType = @"image/png";
         WeakSelf
-        [[EWKJRequest request]uploadWithAPIId:user23 Icons:@[upImg] completed:^(id datas) {
-            if (datas) {
-                NSDictionary *dic = (NSDictionary*)datas;
-                USERBaseClass *user = [USERBaseClass user];
-                user.imageUrl = dic[Data][@"ImageUrl"];
-                [NSKeyedArchiver archiveRootObject:user toFile:USERINFOPATH];
+//        更新用户头像 如何上传头像： 1. 调用API api/file/upload (header需要带上 Token ClientId UuId, body需要带上 FILETYPE = 1 及上传的文件) 2. 调用完此接口后会返回上传文件的URL 3. 然后再调用此接口修改用户的头像
+        [SVProgressHUD showWithStatus:@"正在上传头像，请稍后 ..."];
+        [HttpRequest lirw_uploadWithURLString: [NSString stringWithFormat:@"%@user/file/upload",httpHead] parameters:@{@"FileType":@"1"}.mutableCopy uploadParams:@[upImg] success:^(id responseObject) {
+            
+            if (responseObject) {
+                NSDictionary *imgUrlDic = responseObject[Data];
+                if (imgUrlDic) {
+                    
+                    [[EWKJRequest request]requestWithAPIId:user23 httphead:nil bodyParaDic:imgUrlDic completed:^(id datas) {
+                        [SVProgressHUD dismiss];
+                        [weakSelf alertWithString:@"上传用户头像成功"];
+                        //更新本地头像
+                        USERBaseClass *user = [USERBaseClass user];
+                        user.imageUrl = imgUrlDic[@"ImageUrl"];
+                        [NSKeyedArchiver archiveRootObject:user toFile:USERINFOPATH];
+                    } error:^(NSError *error, NSInteger statusCode) {
+                        [SVProgressHUD dismiss];
+                         [weakSelf alertWithString:@"上传用户头像失败！"];
+                    }];
+                }
             }
             
-        } error:^(NSError *error) {
-            if (error) {
-                [weakSelf alertWithString:[NSString stringWithFormat:@"%@",error]];
-            }
+        } failure:^(NSError *error, NSInteger errorCode) {
+            
+            [weakSelf TipWithErrorCode:errorCode];
+            [SVProgressHUD dismiss];
         }];
+        
+        
+       
+    
     }
 }
 
-
+- (UIImage *)reSizeImage:(UIImage *)image toSize:(CGSize)reSize
+{
+    UIGraphicsBeginImageContext(CGSizeMake(reSize.width, reSize.height));
+    [image drawInRect:CGRectMake(0, 0, reSize.width, reSize.height)];
+    UIImage *reSizeImage = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    
+    return reSizeImage;
+    
+}
 
 
 -(UIImagePickerController *)imgPicker{

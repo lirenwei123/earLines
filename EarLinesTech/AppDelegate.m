@@ -9,59 +9,70 @@
 #import "AppDelegate.h"
 #import "JSHAREService.h"
 #import "HomePageViewController.h"
+#import "ADViewContrller.h"
+#import "WXApi.h"
+#import "WXApiManager.h"
+#import <AlipaySDK/AlipaySDK.h>
+#import <Bugly/Bugly.h>
 
-@interface AppDelegate ()
+
+@interface AppDelegate ()<WXApiDelegate>
 
 @end
 
 @implementation AppDelegate
 
 
+
+
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Override point for customization after application launch.
+    [Bugly startWithAppId:@"807ede26b0"];
     
     _window = [[UIWindow alloc]initWithFrame:[UIScreen mainScreen].bounds];
     
     
-    BOOL isfirstApp = [[NSUserDefaults standardUserDefaults]boolForKey:FISTAPP];
-    if (!isfirstApp) {
-        //第一次进入app,开启介绍图
-        UIScrollView *SC =[[UIScrollView alloc]initWithFrame:_window.bounds];
-        SC.tag = 100;
-        UIButton *intoBtn = [UIButton buttonWithType:UIButtonTypeSystem];
-        intoBtn.backgroundColor = [UIColor blueColor];
-        [intoBtn setFrame:CGRectMake(0, 0, 100, 30)];
-        intoBtn.center = SC.center;
-        [intoBtn addTarget:self action:@selector(intoBtn:) forControlEvents:UIControlEventTouchUpInside];
-        [intoBtn setTitle:@"广告界面进入" forState:UIControlStateNormal];
-        [SC addSubview:intoBtn];
-        UIViewController *adVC =  [[UIViewController alloc]init];
-        [adVC.view addSubview:SC];
-        _window.rootViewController = adVC;
-        [_window makeKeyAndVisible];
-        [[NSUserDefaults standardUserDefaults]setBool:YES forKey:FISTAPP];
-    }else{
-        [self intoMainPage];
-    }
+//    BOOL isfirstApp = [[NSUserDefaults standardUserDefaults]boolForKey:FISTAPP];
+//    if (!isfirstApp) {
+//        //第一次进入app,开启介绍图
+//
+//        ADViewContrller *adVC =  [[ADViewContrller alloc]init];
+//        WeakSelf
+//        adVC.returnBlock = ^{
+//            [weakSelf intoMainPage];
+//        };
+//        _window.rootViewController = adVC;
+//        [_window makeKeyAndVisible];
+//        [[NSUserDefaults standardUserDefaults]setBool:YES forKey:FISTAPP];
+//    }else{
+//        [self intoMainPage];
+//    }
     
-    
+    [self intoMainPage];
     
     //分享
+//    Appkey : 267715e1c7400 | App Secret : 460376e5bac363be343b118264e88acd
+    
+    
     JSHARELaunchConfig *config = [[JSHARELaunchConfig alloc] init];
     config.appKey = @"706dd7a544b4f5030a104b16";
-    config.QQAppId = @"1106866420";
-    config.QQAppKey = @"FOAFu5y9q81PbqI0";
-    config.WeChatAppId = @"wxc40e16f3ba6ebabc";
+    config.QQAppId = @"1106890737";//1106866420
+    config.QQAppKey = @"p0RUFJAGp3Vtfun9";//FOAFu5y9q81PbqI0
+    config.WeChatAppId = @"wx71d5c80bda7ae0e1";//wxc40e16f3ba6ebabc
     config.WeChatAppSecret = @"dcad950cd0633a27e353477c4ec12e7a";
     [JSHAREService setupWithConfig:config];
     [JSHAREService setDebug:NO];
+    
+    
+    //微信支付
+    [WXApi registerApp:@"wx71d5c80bda7ae0e1"];
     
     
     return YES;
 }
 
 -(void)intoMainPage{
-    HomePageViewController *mainVC = [[HomePageViewController alloc]initWithNibName:@"HomePageViewController" bundle:nil];
+    HomePageViewController *mainVC = [[HomePageViewController alloc]init];
     UINavigationController* nav = [[UINavigationController alloc]initWithRootViewController:mainVC];
     [nav.navigationBar setTitleTextAttributes:@{NSFontAttributeName:[UIFont boldSystemFontOfSize:fontsize],NSForegroundColorAttributeName:[UIColor whiteColor]}];
     nav.navigationBar.barTintColor = [ UIColor redColor];
@@ -79,8 +90,59 @@
 
 -(BOOL)application:(UIApplication *)application handleOpenURL:(NSURL *)url{
     [JSHAREService handleOpenUrl:url];
-    return YES;
+    
+    
+    return [WXApi handleOpenURL:url delegate:[WXApiManager sharedManager]];
 }
+
+
+
+-(BOOL)application:(UIApplication *)app openURL:(NSURL *)url options:(NSDictionary<UIApplicationOpenURLOptionsKey,id> *)options{
+    
+    if ([url.host isEqualToString:@"safepay"]) {
+        // 支付跳转支付宝钱包进行支付，处理支付结果
+        [[AlipaySDK defaultService] processOrderWithPaymentResult:url standbyCallback:^(NSDictionary *resultDic) {
+            NSString *resultStr  = resultDic[@"memo"];
+            if (resultStr.length == 0) {
+                [[NSNotificationCenter defaultCenter]postNotificationName:@"PAYSUCCESS" object:nil];
+            }
+            NSLog(@"result = %@",resultDic);
+        }];
+        
+        // 授权跳转支付宝钱包进行支付，处理支付结果
+        [[AlipaySDK defaultService] processAuth_V2Result:url standbyCallback:^(NSDictionary *resultDic) {
+            NSLog(@"result = %@",resultDic);
+            // 解析 auth code
+            NSString *result = resultDic[@"result"];
+            NSString *authCode = nil;
+            if (result.length>0) {
+                NSArray *resultArr = [result componentsSeparatedByString:@"&"];
+                for (NSString *subResult in resultArr) {
+                    if (subResult.length > 10 && [subResult hasPrefix:@"auth_code="]) {
+                        authCode = [subResult substringFromIndex:10];
+                        break;
+                    }
+                }
+            }
+            NSLog(@"授权结果 authCode = %@", authCode?:@"");
+        }];
+        return YES;
+//    }else if([url.host isEqualToString:@"pay"]){
+          }else if([url.scheme isEqualToString:@"wx71d5c80bda7ae0e1"]){
+        
+        return  [WXApi handleOpenURL:url delegate:[WXApiManager sharedManager]];
+    }
+    return YES;
+    
+    
+    
+    
+    
+    
+    
+    
+}
+
 - (void)applicationWillResignActive:(UIApplication *)application {
     // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
     // Use this method to pause ongoing tasks, disable timers, and invalidate graphics rendering callbacks. Games should use this method to pause the game.

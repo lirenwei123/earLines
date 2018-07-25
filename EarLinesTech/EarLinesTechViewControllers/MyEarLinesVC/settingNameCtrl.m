@@ -40,6 +40,7 @@
     attrs[NSForegroundColorAttributeName] = COLOR(0xc8); // 设置颜色
     NSAttributedString *attStr = [[NSAttributedString alloc] initWithString:@"请输入你的昵称" attributes:attrs]; // 初始化富文本占位字符串
     tf.attributedPlaceholder = attStr;
+    tf.text = _originName;
     [bg1 addSubview:tf];
     _tf = tf;
     
@@ -89,11 +90,10 @@
             [NSKeyedArchiver archiveRootObject:user toFile:USERINFOPATH];
             [weakSelf alertWithString:@"昵称设置成功！"];
         }
-    } error:^(NSError *error) {
+    } error:^(NSError *error,NSInteger code) {
         weakSelf.saveBtn.enabled = YES;
-        if (error) {
-            [weakSelf alertWithString:[NSString stringWithFormat:@"%@",error]];
-        }
+        [weakSelf TipWithErrorCode:code];
+       
     }];
    
 }

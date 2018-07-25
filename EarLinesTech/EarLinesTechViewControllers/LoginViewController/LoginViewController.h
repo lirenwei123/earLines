@@ -8,6 +8,6 @@
 
 #import "EWKJBaseViewController.h"
 
-@interface LoginViewController :EWKJBaseViewController
+@interface LoginViewController :UIViewController
 @property(nonatomic,strong)void(^loginCompelete)(void);
 @end

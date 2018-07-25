@@ -12,6 +12,7 @@
 #import "MallCartModel.h"
 #import "PersonalCenterCtrl.h"
 #import "MallDetailViewController.h"
+#import "CartItem.h"
 
 @interface MyShoppingCartCtrl ()<UITableViewDelegate,UITableViewDataSource>
 @property(nonatomic,strong)UITableView *tab;
@@ -31,7 +32,7 @@
 }
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
-    [self requestCart];
+   
 }
 
 -(void)addUI{
@@ -62,7 +63,7 @@
     [allBtn setImage:[UIImage imageNamed:@"shop_list_dit1"] forState:UIControlStateSelected];
     [allBtn setImage:[UIImage imageNamed:@"shop_list_dit"] forState:UIControlStateNormal];
     [allBtn addTarget:self action:@selector(allSelect:) forControlEvents:UIControlEventTouchUpInside];
-    allBtn.selected = YES;
+    allBtn.selected = NO;
     [bootomV addSubview:allBtn];
     _allSelectBtn = allBtn;
     
@@ -100,7 +101,7 @@
     [bootomV addSubview:jiesuan];
     [jiesuan addTarget:self action:@selector(jiesuanShop) forControlEvents:UIControlEventTouchUpInside];
     
-    
+     [self requestCart];
 }
 
 -(void)haveNoCart{
@@ -144,6 +145,9 @@
                     if (cart.selected) {
                         [weakSelf.selectCarts addObject:cart];
                     }
+                }
+                if (weakSelf.selectCarts.count == weakSelf.carts.count) {
+                    weakSelf.allSelectBtn.selected = YES;
                 }
                 [weakSelf caculateMoney];
             }
@@ -232,7 +236,7 @@
             }
         }else{
             [weakSelf.selectCarts removeObject:Item];
-            if (weakSelf.selectCarts.count == 0) {
+            if (weakSelf.selectCarts.count < weakSelf.carts.count) {
                 weakSelf.allSelectBtn.selected = NO;
             }
         }

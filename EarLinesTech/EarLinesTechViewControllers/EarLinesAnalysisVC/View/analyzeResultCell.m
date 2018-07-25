@@ -7,6 +7,7 @@
 //
 
 #import "analyzeResultCell.h"
+#import "UIImageView+WebCache.h"
 
 @interface analyzeResultCell()
    
@@ -46,17 +47,18 @@
 
     
     -(void)scoreCell{
-        UIImageView *imgv = [[UIImageView alloc]initWithFrame:CGRectMake(10, 20, 90, 90)];
-        _imgv = imgv;
-        [self.contentView addSubview:_imgv];
+        _LeftEarimgv = [[UIImageView alloc]initWithFrame:CGRectMake(((SW-20)/2-150)/2,10, 150, 150)];
+        [self.contentView addSubview:_LeftEarimgv];
+        _RightEarimgv = [[UIImageView alloc]initWithFrame:CGRectMake(SW/2+((SW-20)/2-150)/2,10, 150, 150)];
+        [self.contentView addSubview:_RightEarimgv];
         
-        UILabel *score = [[UILabel alloc]initWithFrame:CGRectMake(CGRectGetMaxX(_imgv.frame)+10, 20, SW-20-90-10, 20)];
+        UILabel *score = [[UILabel alloc]initWithFrame:CGRectMake(10, CGRectGetMaxY(_LeftEarimgv.frame)+10, SW-10-40, 30)];
         [self.contentView addSubview:score];
         score.textAlignment = NSTextAlignmentLeft;
         score.numberOfLines = 0;
         _scoreLab = score;
         
-        UILabel *content = [[UILabel alloc]initWithFrame:CGRectMake(110, 55, SW-110-20-20, self.contentView.frame.size.height -CGRectGetMaxY(_scoreLab.frame)-15-5 )];
+        UILabel *content = [[UILabel alloc]initWithFrame:CGRectMake(10, CGRectGetMaxY(score.frame)+15, SW-10-40, self.contentView.frame.size.height -CGRectGetMaxY(_scoreLab.frame)-15-5 )];
         [self.contentView addSubview:content];
         content.textAlignment = NSTextAlignmentLeft;
         content.font = EWKJfont(12);
@@ -69,7 +71,17 @@
     }
     
       -(void)contentCell{
-          UIButton * titleB = [[UIButton alloc]initWithFrame:CGRectMake((SW-200)/2, 20, 200, 30)];
+          _Contentimgv = [[UIImageView alloc]initWithFrame:CGRectMake(0,10, SW-20, 300)];
+          [self.contentView addSubview:_Contentimgv];
+          
+          UILabel * content = [[UILabel alloc]initWithFrame:CGRectMake(10, 320, SW-40-10, self.contentView.frame.size.height-CGRectGetMaxY(_titleBtn.frame)-20-10)];
+          content.font = EWKJfont(12);
+          content.textColor = COLOR(0x33);
+          content.numberOfLines = 0;
+          _contentLab = content;
+          [self.contentView addSubview:_contentLab];
+          
+          UIButton * titleB = [[UIButton alloc]initWithFrame:CGRectMake((SW-200)/2, CGRectGetMaxY(content.frame)+10, 200, 30)];
           titleB.clipsToBounds = YES;
           titleB.layer.cornerRadius = 15;
           titleB.userInteractionEnabled = NO;
@@ -80,13 +92,6 @@
           [self.contentView addSubview:titleB];
           _titleBtn = titleB;
           
-          UILabel * content = [[UILabel alloc]initWithFrame:CGRectMake(10, 70, SW - 40, self.contentView.frame.size.height-CGRectGetMaxY(_titleBtn.frame)-20-10)];
-          content.font = EWKJfont(12);
-          content.textColor = COLOR(0x33);
-          content.numberOfLines = 0;
-          _contentLab = content;
-          [self.contentView addSubview:_contentLab];
-          
       }
 
 
@@ -95,19 +100,23 @@
     switch (_cellType) {
         case cellTypeScore:
             _contentLab.text = cellItem.content;
-            _contentLab.frame = CGRectMake(110, 55, SW-110-20,_cellItem.contentHeight);
+            _contentLab.frame = CGRectMake(10, 205, SW-10-40,_cellItem.contentHeight);
             break;
         case cellTypeContent:
+        {
             [_titleBtn setTitle:_cellItem.title forState:0];
             _contentLab.text = cellItem.content;
-            _contentLab.frame = CGRectMake(10, 70, SW - 40,_cellItem.contentHeight);
+            _contentLab.frame = CGRectMake(10, 320, SW-40-10,_cellItem.contentHeight);
+            _titleBtn.frame = CGRectMake((SW-200)/2, CGRectGetMaxY(_contentLab.frame)+10, 200, 30);
             
+            NSURL *imgurl = [NSURL URLWithString:[_cellItem.ImgUrl stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+            [_Contentimgv sd_setImageWithURL:imgurl];
+           
             break;
-            
+        }
         default:
             break;
     }
-  
     
 }
 
@@ -122,6 +131,9 @@
     [attriScore addAttribute:NSForegroundColorAttributeName value:RGB(0, 0xc9, 0x93) range:NSMakeRange(8, score.length-8)];
     [attriScore addAttribute:NSFontAttributeName value:EWKJfont(18) range:NSMakeRange(8, score.length-8)];
     _scoreLab.attributedText = attriScore;
+    
+    [_LeftEarimgv sd_setImageWithURL:[NSURL URLWithString:_resultModel.userLeftEarImageUrl]];
+    [_RightEarimgv sd_setImageWithURL:[NSURL URLWithString:_resultModel.userRightEarImageUrl]];
     
    
     

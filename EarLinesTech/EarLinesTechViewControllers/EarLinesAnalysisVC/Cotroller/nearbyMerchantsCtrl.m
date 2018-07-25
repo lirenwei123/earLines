@@ -9,9 +9,11 @@
 #import "nearbyMerchantsCtrl.h"
 #import "merchantCell.h"
 #import "LocationManager.h"
+#import "nearMerchant.h"
 
 @interface nearbyMerchantsCtrl ()<UITableViewDelegate,UITableViewDataSource>
 @property(nonatomic,strong)UITableView *tab;
+@property(nonatomic,strong)NSMutableArray *nearMerchantModels;
 @end
 
 @implementation nearbyMerchantsCtrl
@@ -24,6 +26,7 @@
 -(void)addUI{
     self.navigationTitle.text = @"附近商家";
     self.view.backgroundColor = COLOR(249);
+    _nearMerchantModels= @[].mutableCopy;
     
     _tab =  [[UITableView alloc]initWithFrame:CGRectMake(0,navigationBottom+10, SW,SH-navigationBottom-10) style:UITableViewStylePlain];
     _tab.backgroundColor = [UIColor clearColor];
@@ -36,37 +39,67 @@
     
 }
 
+#pragma mark -  请求附近商家
 -(void)requestMall{
     //GET api/mall/search/nearmerchants?latitude={latitude}&longitude={longitude}&pageSize={pageSize}&pageIndex={pageIndex}
     WeakSelf
     [LocationManager getMoLocationWithSuccess:^(double lat, double lng) {
-        [LocationManager stop];
-        NSString * url =[NSString stringWithFormat:@"http://em-webapi.zhiyunhulian.cn/api/mall/search/nearmerchants?latitude=%.2f&longitude=%.2f&pageSize=2&pageIndex=1",lat,lng];
         
-        [HttpRequest getWithURLString:url parameters:nil success:^(id responseObject) {
-            NSDictionary *dictResponse1 = [NSJSONSerialization JSONObjectWithData:responseObject options:NSJSONReadingAllowFragments error:nil];
-            if (dictResponse1) {
-                NSDictionary *dict = dictResponse1[Data];
-                if (dict) {
-#pragma mark TODO
+        [LocationManager stop];
+        NSString * url =[NSString stringWithFormat:@"%@mall/search/nearmerchants?latitude=%.2f&longitude=%.2f&pageSize=10&pageIndex=1",httpHead,lat,lng];
+        
+        [HttpRequest lrw_getWithURLString:url parameters:nil success:^(id responseObject) {
+            
+            if (responseObject) {
+                NSArray *datas = responseObject[Data];
+                if (datas.count) {
+                    for (int i =0; i<datas.count; i++) {
+                        nearMerchant  *model = [nearMerchant modelObjectWithDictionary:datas[i]];
+                        [weakSelf.nearMerchantModels addObject:model];
+                    }
+                    [weakSelf.tab reloadData];
+                    
+                }else{
+                    [self alertWithString:@"无商家数据"];
                 }
             }
-
-        
             
-        } failure:^(NSError *error) {
-             [weakSelf alertWithString:@"请求错误"];
+            
+            
+        } failure:^(NSError *error,NSInteger code) {
+            [weakSelf TipWithErrorCode:code];
         }];
     } Failure:^(NSError *error) {
-        [weakSelf alertWithString:@"定位失败"];
+        if ([error code] == kCLErrorDenied) {
+            [weakSelf alertWithString:@"获取定位失败,请到设置里打开定位"];
+        }
+            NSString * url =[NSString stringWithFormat:@"%@mall/search/nearmerchants?latitude=%.2f&longitude=%.2f&pageSize=10&pageIndex=1",httpHead,lati,longti];
+            
+            [HttpRequest lrw_getWithURLString:url parameters:nil success:^(id responseObject) {
+                
+                if (responseObject) {
+                    NSArray *datas = responseObject[Data];
+                    if (datas.count) {
+                        for (int i =0; i<datas.count; i++) {
+                            nearMerchant  *model = [nearMerchant modelObjectWithDictionary:datas[i]];
+                            [weakSelf.nearMerchantModels addObject:model];
+                        }
+                        [weakSelf.tab reloadData];
+                        
+                    }else{
+                        [self alertWithString:@"无商家数据"];
+                    }
+                }
+                
+            } failure:^(NSError *error,NSInteger code) {
+                [weakSelf TipWithErrorCode:code];
+            }];
     }];
- 
-   
 }
 
 
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
-    return 4;
+    return _nearMerchantModels.count;
 }
 
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
@@ -78,9 +111,7 @@
     if (!cell) {
         cell = [merchantCell cell];
     }
-    cell.imgv.image = [UIImage imageNamed:@"people"];
-    cell.describleLab.text = @"小龙坎老火锅(春熙店)";
-    cell.adressLab.text = @"春熙路 1.1km";
+    cell.item = _nearMerchantModels[indexPath.row];
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
     return cell;
 }

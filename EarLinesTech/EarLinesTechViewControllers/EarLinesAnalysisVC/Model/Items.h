@@ -13,6 +13,7 @@
 
 @property (nonatomic, strong) NSString *subject;
 @property (nonatomic, strong) NSString *body;
+@property (nonatomic, strong) NSString *imageUrl;
 
 + (instancetype)modelObjectWithDictionary:(NSDictionary *)dict;
 - (instancetype)initWithDictionary:(NSDictionary *)dict;

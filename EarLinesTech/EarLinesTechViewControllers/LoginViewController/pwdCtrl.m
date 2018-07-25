@@ -8,12 +8,12 @@
 
 #import "pwdCtrl.h"
 #import "USERBaseClass.h"
-#import "LoginViewController.h"
+
 
 
 static int mytime = 60;
 
-@interface pwdCtrl ()
+@interface pwdCtrl ()<UITextFieldDelegate>
    @property(nonatomic,strong)NSMutableArray *tfs;
    @property(nonatomic,strong)NSTimer *mytimer;
    @property(nonatomic,strong)UIButton *yzmBtn;
@@ -144,7 +144,7 @@ static int mytime = 60;
                     [weakSelf alertWithString:ErrorMessage];
                 }
             }
-        } error:^(NSError *error) {
+        } error:^(NSError *error,NSInteger code) {
             weakSelf.mytimer.fireDate =  [NSDate distantFuture];
             sender.enabled = YES;
             mytime = 60;
@@ -219,6 +219,7 @@ static int mytime = 60;
         tf.textAlignment = NSTextAlignmentLeft;
         tf.textColor = COLOR(0xc8);
         tf.secureTextEntry = YES;
+        tf.delegate = self;
         [_tfs addObject:tf];
         
         
@@ -227,7 +228,6 @@ static int mytime = 60;
         tip.textAlignment = NSTextAlignmentLeft;
         tip.font = EWKJboldFont(12);
         tip.textColor = RGB(0xed, 0x2c, 0x2c);
-        tip.text = @"test";
         tip.tag = 100+i-1;
         [self.view addSubview:tip];
         
@@ -318,7 +318,7 @@ static int mytime = 60;
                              @"",@"Gender",
                              [_tfs[1] text],@"VerificationCode", nil];
         
-        [[EWKJRequest request]requestWithAPIId:user4 httphead:(NSString *)nil bodyParaDic:dic completed:^(id datas) {
+        [[EWKJRequest request]requestWithAPIId:user4 httphead:nil bodyParaDic:dic completed:^(id datas) {
             sender.enabled = YES;
             if (datas) {
                 //保存客户登陆信息
@@ -330,7 +330,7 @@ static int mytime = 60;
                 [weakSelf.navigationController popViewControllerAnimated:NO];
                 [weakSelf alertWithString:@"注册成功!"];
             }
-        } error:^(NSError *error) {
+        } error:^(NSError *error,NSInteger code) {
             [weakSelf alertWithString:[NSString stringWithFormat:@"%@",error]];
             sender.enabled = YES;
         }];
@@ -363,10 +363,8 @@ static int mytime = 60;
                 }
             }
             sender.enabled = YES;
-        } error:^(NSError *error) {
-            if (error) {
-                [weakSelf alertWithString:[NSString stringWithFormat:@"%@",error]];
-            }
+        } error:^(NSError *error,NSInteger code) {
+            [weakSelf TipWithErrorCode:code];
             sender.enabled = YES;
         }];
         
@@ -408,11 +406,9 @@ static int mytime = 60;
             [weakSelf addModifyPWDSuccess];
             
             
-        } error:^(NSError *error) {
+        } error:^(NSError *error,NSInteger code) {
             sender.enabled = YES;
-            if (error) {
-                [weakSelf alertWithString:[NSString stringWithFormat:@"%@",error]];
-            }
+            [weakSelf TipWithErrorCode:code];
         }];
         
        
@@ -428,6 +424,32 @@ static int mytime = 60;
     NSString *MOBILE = @"^1(3[0-9]|4[57]|5[0-35-9]|8[0-9]|7[0135678])\\d{8}$";
     NSPredicate *regextestmobile = [NSPredicate predicateWithFormat:@"SELF MATCHES %@", MOBILE];
     return [regextestmobile evaluateWithObject:mobileNum];
+}
+
+-(void)textFieldDidEndEditing:(UITextField *)textField{
+    if(textField == _tfs[0]){
+        UILabel *tip = [self.view viewWithTag:100];
+        if (![textField.text isEqualToString:[USERBaseClass user].pwd]) {
+            tip.text = @"当前密码不一致";
+        }else{
+            tip.text = @"";
+        }
+    }else if (textField == _tfs[1]){
+        UILabel *tip = [self.view viewWithTag:101];
+        NSString *text = textField.text;
+        if(text.length<6 ||text.length >16){
+            tip.text = @"请填写6-16位的密码";
+        }else{
+            tip.text = @"";
+        }
+    }else if (textField == _tfs[2]){
+        UILabel *tip = [self.view viewWithTag:102];
+        if (![textField.text isEqualToString:[_tfs[1] text]]) {
+            tip.text = @"确认密码和新密码不一致";
+        }else{
+            tip.text =@"";
+        }
+    }
 }
 
 - (void)didReceiveMemoryWarning {

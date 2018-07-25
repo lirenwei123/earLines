@@ -55,6 +55,10 @@
     
 }
 
+-(void)shareLinkWithJSHAREPlatform:(JSHAREPlatform)platform JSHAREMessage:(JSHAREMessage*)message complete:(void(^)(JSHAREState state, NSError *error))complete{
+     [self shareLinkWithPlatform:platform andMessage:message];
+}
+
 -(void)shareWithJSHAREPlatform:(JSHAREPlatform)platform imgData:(NSData *)data complete:(void (^)(JSHAREState, NSError *))complete{
     _completeBlock = complete;
     [self shareImageWithPlatform:platform andImgData:data];
@@ -128,6 +132,15 @@
     NSData *imageData = [NSData dataWithContentsOfURL:[NSURL URLWithString:imageURL]];
     
     message.image = imageData;
+    WeakSelf
+    [JSHAREService share:message handler:^(JSHAREState state, NSError *error) {
+        if (weakSelf.completeBlock) {
+            weakSelf.completeBlock(state,error);
+        }
+    }];
+}
+
+- (void)shareLinkWithPlatform:(JSHAREPlatform)platform andMessage:(JSHAREMessage*)message{
     WeakSelf
     [JSHAREService share:message handler:^(JSHAREState state, NSError *error) {
         if (weakSelf.completeBlock) {

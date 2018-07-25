@@ -11,6 +11,7 @@
 #import "pwdCtrl.h"
 #import "settingNameCtrl.h"
 #import "selectHeadPhotoCtrl.h"
+#import "UIImageView+WebCache.h"
 
 typedef NS_ENUM(NSUInteger, CONTENTYPE) {
     CONTENTYPE_IMG,//图片类型
@@ -105,7 +106,15 @@ typedef NS_ENUM(NSUInteger, PERSONCENTERTAG) {
                 CONTENTYPE type = num.intValue;
                 if (type == CONTENTYPE_IMG ) {
                     
-                    EWKJBtn *btn = [[EWKJBtn alloc]initEWKJDetailBtnFrame:CGRectMake(SW-margin-height-20, (i-cellCount)*height, height+30-10, height-10) ImageName:@"Head_portrait" touchEvent:nil];
+                    EWKJBtn *btn = [[EWKJBtn alloc]initEWKJDetailBtnFrame:CGRectMake(SW-margin-height-20, (i-cellCount)*height, height+30-10, height-10) ImageName:nil touchEvent:nil];
+                     NSString *imgurl = [USERBaseClass user].imageUrl;
+                    if (imgurl.length) {
+                        [btn.imgv sd_setImageWithURL:[NSURL URLWithString:imgurl] placeholderImage:[UIImage imageNamed:@"Head_portrait"]];
+                    }else{
+                        
+                        btn.imgv.image = [UIImage imageNamed:@"Head_portrait"];
+                    }
+                    
                     btn.lab.textColor = COLOR(153);
                     [bgView addSubview:btn];
                     if ([USERBaseClass user].imageUrl.length) {
@@ -196,10 +205,20 @@ typedef NS_ENUM(NSUInteger, PERSONCENTERTAG) {
             UILabel *lab = weakSelf.labs[1];
             lab.text = nickname;
         };
+        nameVC.originName = [USERBaseClass user].nickName;
         [self.navigationController pushViewController:nameVC animated:NO];
     }else if (tag == PERSONCENTER_logout){
+        USERBaseClass *user = nil;
+        
+        [HttpRequest lrw_getWithURLString:[NSString stringWithFormat:@"%@user/logout",httpHead] parameters:nil success:^(id responseObject) {
+            
+        } failure:^(NSError *error, NSInteger errorCode) {
+            
+        }];
+        
+         [NSKeyedArchiver archiveRootObject:user toFile:USERINFOPATH];
         [[NSUserDefaults standardUserDefaults]setBool:NO forKey:ISLOGIN];
-        [self.navigationController popViewControllerAnimated:NO];
+        [self.navigationController popToRootViewControllerAnimated:YES];
     }else if (tag == PERSONCENTER_loginpwd){
         pwdCtrl *vc  =[[pwdCtrl alloc]init];
         vc.pwdType = PWDTYPE_MODIFYPWD;

@@ -19,6 +19,10 @@
 #import "PersonalCenterCtrl.h"
 #import "MallDetailModel.h"
 #import "MallDetailViewController.h"
+#import "MerchantModel.h"
+#import "MerchantDetailViewController.h"
+#import "MyShoppingCartCtrl.h"
+
 
 
 @interface OnlineShoppingViewController ()<UICollectionViewDelegate,UICollectionViewDataSource,UIScrollViewDelegate,UITableViewDelegate,UITableViewDataSource,UITextFieldDelegate>
@@ -27,6 +31,7 @@
 @property(nonatomic,strong)UICollectionView *adviceMallcoView;
 @property(nonatomic,strong)UITableView *nearbyMalltab;
 @property(nonatomic,strong)UIScrollView *adSc;
+@property(nonatomic,strong)UIView *adbg;//广告滚动背景
 @property(nonatomic,assign)UIPageControl *SCpg;
 @property(nonatomic,assign)NSInteger SCcurrentPage;
 @property(nonatomic,strong)UIView *headerBGV;
@@ -36,6 +41,11 @@
 @property(nonatomic,assign)CGFloat lat;//纬度
 @property(nonatomic,assign)CGFloat  lng;//经度
 
+@property(nonatomic,strong)UICollectionViewFlowLayout * layout;
+
+
+@property(nonatomic,strong)NSMutableArray *nearMerchantModels;
+
 @end
 
 @implementation OnlineShoppingViewController
@@ -43,47 +53,50 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-    
-
+     _nearMerchantModels = @[].mutableCopy;
+    [self requestMallHomePage];
     
 }
--(void)addUI{
+-(void)setUI{
     //菜单
+   
     [self addTopMenu];
     
     //头部广告
-    _adSc = [[UIScrollView alloc]initWithFrame:CGRectMake(0, navigationBottom, SW, 190)];
-    _adSc.showsHorizontalScrollIndicator = NO;
-    _adSc.pagingEnabled = YES;
-    _adSc.delegate =self;
-    [self.view addSubview:_adSc];
+//    _adSc = [[UIScrollView alloc]initWithFrame:CGRectMake(0, navigationBottom, SW, 190)];
+//    _adSc.showsHorizontalScrollIndicator = NO;
+//    _adSc.pagingEnabled = YES;
+//    _adSc.delegate =self;
+//    [self.view addSubview:_adSc];
     
     
     //主框架。 collectionview做精品推荐。footerView 做附近商家
-    UICollectionViewFlowLayout *layout = [[UICollectionViewFlowLayout alloc]init];
-    layout.itemSize =   CGSizeMake((SW-15*3)/2, 164);
+    _layout = [[UICollectionViewFlowLayout alloc]init];
+    _layout.itemSize =   CGSizeMake((SW-15*3)/2, 164);
     CGFloat magin = 15;
-    layout.minimumLineSpacing = magin;
-    layout.minimumInteritemSpacing = magin;
-    layout.sectionInset = UIEdgeInsetsMake(0, magin, 0, magin);
-    layout.scrollDirection =  UICollectionViewScrollDirectionVertical;
-    layout.headerReferenceSize = CGSizeMake(SW, 70);
-    layout.footerReferenceSize = CGSizeMake(SW, 70*2+93*4);
+    _layout.minimumLineSpacing = magin;
+    _layout.minimumInteritemSpacing = magin;
+    _layout.sectionInset = UIEdgeInsetsMake(0, magin, 0, magin);
+    _layout.scrollDirection =  UICollectionViewScrollDirectionVertical;
+    _layout.headerReferenceSize = CGSizeMake(SW, 70+190);
+    _layout.footerReferenceSize = CGSizeMake(SW, 70*2+93*_nearMerchantModels.count);
   
    
 
     
-    _adviceMallcoView = [[UICollectionView alloc]initWithFrame:CGRectMake(0, CGRectGetMaxY(_adSc.frame), SW, SH-CGRectGetMaxY(_adSc.frame)-bottomHeight) collectionViewLayout:layout];
+    _adviceMallcoView = [[UICollectionView alloc]initWithFrame:CGRectMake(0, navigationBottom, SW, SH-navigationBottom-bottomHeight) collectionViewLayout:_layout];
     _adviceMallcoView.showsVerticalScrollIndicator = NO;
     _adviceMallcoView.backgroundColor = COLOR(243);
     [_adviceMallcoView registerClass:[UICollectionViewCell class] forCellWithReuseIdentifier:@"co"];
     [_adviceMallcoView registerNib:[UINib nibWithNibName:@"onlineshopCollectionViewCell" bundle:nil] forCellWithReuseIdentifier:@"onlineshop"];
      [_adviceMallcoView registerClass:[UICollectionReusableView class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"HeaderView"];
      [_adviceMallcoView registerClass:[UICollectionReusableView class] forSupplementaryViewOfKind:UICollectionElementKindSectionFooter withReuseIdentifier:@"FooterView"];
+    _adviceMallcoView.delegate = self;
+    _adviceMallcoView.dataSource = self;
     [self.view addSubview:_adviceMallcoView];
     
     
-     [self requestMallHomePage];
+    
     
     //购物车
     UIButton *buyCart = [[UIButton alloc]initWithFrame:CGRectMake(SW- 82, SH-bottomHeight-100, 62, 62)];
@@ -152,20 +165,31 @@
             _headerBGV.backgroundColor = [UIColor clearColor];
             [headerView addSubview:_headerBGV];
             
-            UILabel *lab = [[UILabel alloc]initWithFrame:CGRectMake((SW-100)/2, 0, 100, 70)];
+            
+            _adSc = [[UIScrollView alloc]initWithFrame:CGRectMake(0, 0, SW, 180)];
+            _adSc.showsHorizontalScrollIndicator = NO;
+            _adSc.pagingEnabled = YES;
+            _adSc.delegate =self;
+            _adbg = [[UIView alloc]initWithFrame:_adSc.frame];
+            [_headerBGV addSubview:_adbg];
+            [_adbg addSubview:_adSc];
+            [_headerBGV addSubview:_adbg];
+            [self setAdWith:_mallHomeModel.banners];
+            
+            UILabel *lab = [[UILabel alloc]initWithFrame:CGRectMake((SW-100)/2, 180, 100, 70)];
             lab.text =@"精品推荐";
             lab.textColor= [UIColor redColor];
             lab.textAlignment = NSTextAlignmentCenter;
             [_headerBGV addSubview:lab];
             
-            UIView *linel = [[UIView alloc]initWithFrame:CGRectMake(CGRectGetMinX(lab.frame)-60, 35, 50, 1)];
+            UIView *linel = [[UIView alloc]initWithFrame:CGRectMake(CGRectGetMinX(lab.frame)-60, 215, 50, 1)];
             linel.backgroundColor = [UIColor redColor];
             [_headerBGV addSubview:linel];
-            UIView *liner = [[UIView alloc]initWithFrame:CGRectMake(CGRectGetMaxX(lab.frame)+10, 35, 50, 1)];
+            UIView *liner = [[UIView alloc]initWithFrame:CGRectMake(CGRectGetMaxX(lab.frame)+10, 215, 50, 1)];
             liner.backgroundColor = [UIColor redColor];
             [_headerBGV addSubview:liner];
             
-            UIButton *more = [[UIButton alloc]initWithFrame:CGRectMake(SW-45, 25, 30, 20)];
+            UIButton *more = [[UIButton alloc]initWithFrame:CGRectMake(SW-45, 205, 30, 20)];
             [more setTitle:@"更多" forState:UIControlStateNormal];
             more.backgroundColor = [UIColor clearColor];
             [more addTarget:self action:@selector(moreMall:) forControlEvents:UIControlEventTouchUpInside];
@@ -235,15 +259,24 @@
     cell.item = product;
     WeakSelf
     cell.addBlock = ^(Products *item) {
-        [weakSelf requestMallDetailWithproductId:item.productId];
+        //添加商品到购物车
+        [weakSelf addtoCartWithMall:item];
     };
     
     return cell;
 }
 
+
+-(void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath{
+     Products  *product = _mallHomeModel.products[indexPath.row];
+    MallDetailViewController *detail = [[MallDetailViewController alloc]init];
+    detail.productID = product.productId;
+    [self.navigationController pushViewController:detail animated:NO];
+}
+
 #pragma mark -- tableDelegate
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
-    return 4;
+    return _nearMerchantModels.count;
 }
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
     return 93;
@@ -254,11 +287,19 @@
         cell = [merchantCell cell];
     }
     cell.contentView.backgroundColor = COLOR(243);
-    cell.imgv.image = [UIImage imageNamed:@"people"];
-    cell.describleLab.text = @"小龙坎老火锅(春熙店)";
-    cell.adressLab.text = @"春熙路 1.1km";
+    cell.item = _nearMerchantModels[indexPath.row];
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
     return cell;
+}
+
+-(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
+    MerchantModel *merchant = _nearMerchantModels[indexPath.row];
+    MerchantDetailViewController *merchantVC = [[MerchantDetailViewController alloc]init];
+    merchantVC.merchantId = merchant.merchantId;
+    [self.navigationController pushViewController:merchantVC animated:NO];
+    
+    
+    
 }
 
 //#pragma mark - layoutDelegate
@@ -279,78 +320,134 @@
 }
 #pragma mark -- 购物车点击
 -(void)buyCartClick:(UIButton *)sender{
-    
+    if (![[NSUserDefaults standardUserDefaults]boolForKey:ISLOGIN]) {
+        LoginViewController *logvc = [[LoginViewController alloc]init];
+        WeakSelf
+        logvc.loginCompelete = ^{
+            MyShoppingCartCtrl *cartVC = [[MyShoppingCartCtrl alloc]init];
+            [weakSelf.navigationController pushViewController:cartVC animated:NO];
+        };
+        [self.navigationController pushViewController:logvc animated:NO];
+    }else{
+        MyShoppingCartCtrl *cartVC = [[MyShoppingCartCtrl alloc]init];
+        [self.navigationController pushViewController:cartVC animated:NO];
+    }
 }
+
+#pragma mark -- 添加到购物车
+-(void)addtoCartWithMall:(Products *)product{
+    if (![[NSUserDefaults standardUserDefaults]boolForKey:ISLOGIN]) {
+        LoginViewController *logvc = [[LoginViewController alloc]init];
+        WeakSelf
+        logvc.loginCompelete = ^{
+            NSMutableDictionary *dict = @{@"ProductId":@((int)product.productId),@"Qty":@(1)}.mutableCopy;
+            [[EWKJRequest request]requestWithAPIId:cart2 httphead:nil bodyParaDic:dict completed:^(id datas) {
+                [weakSelf alertWithString:@"添加成功！"];
+            } error:^(NSError *error, NSInteger statusCode) {
+                [weakSelf alertWithString:@"添加到购物车失败"];
+            }];
+        };
+        [self.navigationController pushViewController:logvc animated:NO];
+    }else{
+        NSMutableDictionary *dict = @{@"ProductId":@((int)product.productId),@"Qty":@(1)}.mutableCopy;
+        WeakSelf
+        [[EWKJRequest request]requestWithAPIId:cart2 httphead:nil bodyParaDic:dict completed:^(id datas) {
+            [weakSelf alertWithString:@"添加成功！"];
+        } error:^(NSError *error, NSInteger statusCode) {
+            [weakSelf alertWithString:@"添加到购物车失败"];
+        }];
+    }
+}
+
 #pragma mark -- 请求
 -(void)requestMallHomePage{
 //    GET api/mall/home?productPageSize={productPageSize}&merchantPageSize={merchantPageSize}&latitude={latitude}&longitude={longitude}
     WeakSelf
     [SVProgressHUD showWithStatus:@"正在加载数据..."];
     [LocationManager getMoLocationWithSuccess:^(double lat, double lng) {
-        LAT = lat;
-        LNG = LNG;
         [LocationManager stop];
-        NSString * url =[NSString stringWithFormat:@"http://em-webapi.zhiyunhulian.cn/api/mall/home?productPageSize=10&merchantPageSize=5&latitude=%.2f&longitude=%.2f",lat,lng];
-       
-        [HttpRequest getWithURLString:url parameters:nil success:^(id responseObject) {
+        NSString * url =[NSString stringWithFormat:@"%@mall/home?productPageSize=10&merchantPageSize=10&latitude=%.2f&longitude=%.2f",httpHead,lat,lng];
+      
+        [HttpRequest lrw_getWithURLString:url parameters:nil success:^(id responseObject) {
             [SVProgressHUD dismiss];
-            NSDictionary *dictResponse = [NSJSONSerialization JSONObjectWithData:responseObject options:NSJSONReadingAllowFragments error:nil];
-            if (dictResponse) {
-                NSDictionary *dict = dictResponse[Data];
+            if (responseObject) {
+                NSDictionary *dict = responseObject[Data];
                 if (dict) {
                     weakSelf.mallHomeModel = [MallHome modelObjectWithDictionary:dict];
-                    weakSelf.adviceMallcoView.delegate = self;
-                    weakSelf.adviceMallcoView.dataSource = self;
-                    [weakSelf.adviceMallcoView reloadData];
-                    [weakSelf setAdWith:weakSelf.mallHomeModel.banners];
+                    weakSelf.nearMerchantModels = weakSelf.mallHomeModel.agencies.copy;
+                    [weakSelf setUI];
+                   
                 }
             }
             
-        } failure:^(NSError *error) {
+        } failure:^(NSError *error,NSInteger code) {
              [SVProgressHUD dismiss];
-            [weakSelf alertWithString:@"推荐商品请求数据失败"];
+            [weakSelf TipWithErrorCode:code];
+            
         }];
         
         
-        NSString * url1 =[NSString stringWithFormat:@"http://em-webapi.zhiyunhulian.cn/api/mall/search/nearmerchants?latitude=%.2f&longitude=%.2f&pageSize=2&pageIndex=1",lat,lng];
-        
-        [HttpRequest getWithURLString:url1 parameters:nil success:^(id responseObject) {
-            NSDictionary *dictResponse1 = [NSJSONSerialization JSONObjectWithData:responseObject options:NSJSONReadingAllowFragments error:nil];
-            if (dictResponse1) {
-                NSDictionary *dict = dictResponse1[Data];
-                if (dict) {
-                   #pragma mark TODO
-                }
-            }
-
-
-            
-            
-        } failure:^(NSError *error) {
-            [weakSelf alertWithString:@"附近请求错误"];
-        }];
+//        NSString * url1 =[NSString stringWithFormat:@"http://em-webapi.zhiyunhulian.cn/api/mall/search/nearmerchants?latitude=%.2f&longitude=%.2f&pageSize=10&pageIndex=1",lat,lng];
+//
+//        [HttpRequest lrw_getWithURLString:url1 parameters:nil success:^(id responseObject) {
+//            [SVProgressHUD dismiss];
+//            if (responseObject) {
+//                NSArray *datas = responseObject[Data];
+//                weakSelf.layout.footerReferenceSize = CGSizeMake(SW, 70*2+93*datas.count);
+//                if (datas.count) {
+//                    for (int i =0; i<datas.count; i++) {
+//                        nearMerchant  *model = [nearMerchant modelObjectWithDictionary:datas[i]];
+//                        [weakSelf.nearMerchantModels addObject:model];
+//                    }
+//                      [weakSelf.adviceMallcoView reloadData];
+//                }else{
+////                    [weakSelf alertWithString:@"没有返回附近商家数据"];
+//                    [weakSelf.adviceMallcoView reloadData];
+//                }
+//            }
+//
+//
+//            
+//
+//        } failure:^(NSError *error,NSInteger code) {
+//            [SVProgressHUD dismiss];
+//            if (code ==401) {
+//                [weakSelf alertWithString:@"登录时效过期，请重新登录"];
+//            }else{
+//                [weakSelf alertWithString:[NSString stringWithFormat:@"请求数据失败%ld",code]];
+//            }
+//        }];
     } Failure:^(NSError *error) {
         [SVProgressHUD dismiss];
-        [weakSelf alertWithString:@"定位失败"];
+        if ([error code] == kCLErrorDenied) {
+            [weakSelf alertWithString:@"获取定位失败,请到设置里打开定位"];
+        }
+        NSString * url =[NSString stringWithFormat:@"%@mall/home?productPageSize=10&merchantPageSize=10&latitude=%.2f&longitude=%.2f",httpHead,lati,longti];
+        
+        [HttpRequest lrw_getWithURLString:url parameters:nil success:^(id responseObject) {
+            [SVProgressHUD dismiss];
+            if (responseObject) {
+                NSDictionary *dict = responseObject[Data];
+                if (dict) {
+                    weakSelf.mallHomeModel = [MallHome modelObjectWithDictionary:dict];
+                    weakSelf.nearMerchantModels = weakSelf.mallHomeModel.agencies.copy;
+                    [weakSelf setUI];
+                    
+                }
+            }
+            
+        } failure:^(NSError *error,NSInteger code) {
+            [SVProgressHUD dismiss];
+            [weakSelf TipWithErrorCode:code];
+            
+        }];
+        
     }];
    
     
 }
-#pragma mark - 请求商品详情
--(void)requestMallDetailWithproductId:(NSInteger)productId{
-   
-    [HttpRequest lrw_getWithURLString:[NSString stringWithFormat:@"http://em-webapi.zhiyunhulian.cn/api/mall/product/detail?productId=%ld",(long)productId] parameters:nil success:^(id responseObject) {
-        if (responseObject) {
-            NSDictionary *dict = responseObject[Data];
-            MallDetailModel *detailModel = [MallDetailModel modelObjectWithDictionary:dict];
-            MallDetailViewController *detailVC = [[MallDetailViewController alloc]init];
-            detailVC.detailModel  = detailModel;
-            [self.navigationController pushViewController:detailVC animated:NO];
-        }
-    } failure:^(NSError *error) {
-        [self alertWithString:@"商品详情请求错误"];
-    }];
-}
+
+
 
 #pragma mark textfield dlegate
 
@@ -374,8 +471,8 @@
                     [self alertWithString:@"没有您搜索的商品！"];
                 }
             }
-        } fail:^(NSError *error) {
-             [self alertWithString:@"请求错误！"];
+        } fail:^(NSError *error,NSInteger code) {
+            
         }];
 
           textField.text = nil;
@@ -395,8 +492,17 @@
 }
 
 -(void)userClick{
-    PersonalCenterCtrl *personVC =  [[PersonalCenterCtrl alloc]init];
-    [self.navigationController pushViewController:personVC animated:NO];
+    if (![[NSUserDefaults standardUserDefaults]boolForKey:ISLOGIN]) {
+        LoginViewController *logvc = [[LoginViewController alloc]init];
+        WeakSelf
+        logvc.loginCompelete = ^{
+            [weakSelf.navigationController pushViewController: [[PersonalCenterCtrl alloc]init] animated:NO];
+        };
+        [self.navigationController pushViewController:logvc animated:NO];
+    }else{
+        [self.navigationController pushViewController:[[PersonalCenterCtrl alloc]init] animated:NO];
+    }
+   
 }
 -(void)setAdWith:(NSArray *)adImgUrls{
     for (int i = 0 ; i<adImgUrls.count; i++) {
@@ -405,16 +511,22 @@
         Banners *banner = adImgUrls[i];
 //        [imgv sd_setImageWithURL:[NSURL URLWithString:banner.imageUrl]];
 
-        imgv.image = [UIImage sd_imageWithWebPData:[NSData dataWithContentsOfURL:[NSURL URLWithString:banner.imageUrl]]];
-        imgv.contentMode = UIViewContentModeScaleAspectFill;
+        if ([[banner.imageUrl substringWithRange:NSMakeRange(banner.imageUrl.length-4, 4)]isEqualToString:@"webp"]) {
+            imgv.image = [UIImage sd_imageWithWebPData:[NSData dataWithContentsOfURL:[NSURL URLWithString:banner.imageUrl]]];
+        }else{
+            [imgv sd_setImageWithURL:[NSURL URLWithString:banner.imageUrl]];
+        }
+        
+       
+        imgv.contentMode = UIViewContentModeScaleToFill;
         [_adSc addSubview:imgv];
     }
     _adSc.contentSize =CGSizeMake(SW*adImgUrls.count, 190);
     
     if (adImgUrls.count >1) {
         
-        UIPageControl *pg = [[UIPageControl alloc]initWithFrame:CGRectMake(SW/2, navigationBottom+160, 20, 20)];
-        [self.view addSubview:pg];
+        UIPageControl *pg = [[UIPageControl alloc]initWithFrame:CGRectMake(SW/2, 160, 20, 20)];
+        [_adbg addSubview:pg];
         pg.numberOfPages = adImgUrls.count;
         pg.currentPage = 0;
         _SCcurrentPage = 0;

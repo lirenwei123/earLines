@@ -11,5 +11,5 @@
 @interface settingNameCtrl : EWKJBaseViewController
 
 @property(nonatomic,copy) void (^setNickName)(NSString *nickname);
-
+@property(nonatomic,copy)NSString *originName;
 @end

@@ -9,6 +9,6 @@
 #import "EWKJBaseViewController.h"
 
 @interface maintenanceAdviceCtrl : EWKJBaseViewController
-@property(nonatomic,assign)NSInteger suggestID;
+@property(nonatomic,assign)int suggestID;
 @property(nonatomic,copy)NSString * adviceString;
 @end

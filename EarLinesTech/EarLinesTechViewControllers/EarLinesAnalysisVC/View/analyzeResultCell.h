@@ -20,7 +20,9 @@ typedef NS_ENUM(NSUInteger, cellType) {
 
 @property(nonatomic,assign)cellType cellType;
 
-@property(nonatomic,strong)UIImageView *imgv;
+@property(nonatomic,strong)UIImageView *LeftEarimgv;
+@property(nonatomic,strong)UIImageView *RightEarimgv;
+@property(nonatomic,strong)UIImageView *Contentimgv;
 @property(nonatomic,strong)UILabel *scoreLab;
 @property(nonatomic,strong)UILabel *contentLab;
 @property(nonatomic,strong)UIButton *titleBtn;

@@ -12,6 +12,7 @@
 #import "analyseResultDataModels.h"
 
 
+
 @interface EarLinesAnalysisViewController()<UIImagePickerControllerDelegate,UINavigationControllerDelegate>
 
     @property(nonatomic,strong)UIImage *leftImg;
@@ -53,7 +54,7 @@
 }
 
 -(void)addUI{
-    self.navigationTitle.text = @"耳闻分析";
+    self.navigationTitle.text = @"耳纹分析";
     CGFloat margin = 25;
     CGFloat top = 150;
     CGFloat w =SW/2 - margin*2;
@@ -205,14 +206,15 @@
                     }
                    
                 }
-            } error:^(NSError *error) {
+            } error:^(NSError *error,NSInteger code) {
 //                [SVProgressHUD dismiss];
                 [weakSelf stopAmazing];
                 [weakSelf.uploadImgs removeAllObjects];
                 sender.enabled = YES;
                 DebugLog(@"%@",error);
-                [self alertWithString:[NSString stringWithFormat:@"%@",error]];
+                
                 [weakSelf initBtnState];
+                [weakSelf TipWithErrorCode:code];
             }];
         }else{
             //请上传照片
@@ -235,14 +237,28 @@
        _isLeft = isleft;
       if([UIImagePickerController availableMediaTypesForSourceType:UIImagePickerControllerSourceTypeCamera]){
           self.imgPicker.sourceType = UIImagePickerControllerSourceTypeCamera;
-           self.imgPicker.cameraDevice = UIImagePickerControllerCameraDeviceRear;
            self.imgPicker.showsCameraControls = NO;
            self.imgPicker.cameraFlashMode = UIImagePickerControllerCameraFlashModeOff;
           [self.imgPicker updateFocusIfNeeded];
+          
           if([UIImagePickerController isCameraDeviceAvailable:UIImagePickerControllerCameraDeviceRear]){
+              self.imgPicker.cameraDevice = UIImagePickerControllerCameraDeviceRear;
               UIView *overlayView = [self overLayViewWithImgName:isleft?@"wl":@"wr" centerPoint:self.imgPicker.view.center isLeft:isleft];
               self.imgPicker.cameraOverlayView = overlayView;
               _isAlum = NO;
+              
+              CGSize screenBounds = [UIScreen mainScreen].bounds.size;
+              
+              CGFloat cameraAspectRatio = 4.0f/3.0f;
+              
+              CGFloat camViewHeight = screenBounds.width * cameraAspectRatio;
+              
+              CGFloat scale = screenBounds.height / camViewHeight;
+              
+              _imgPicker.cameraViewTransform = CGAffineTransformMakeTranslation(0, (screenBounds.height - camViewHeight) / 2.0);
+              
+              _imgPicker.cameraViewTransform = CGAffineTransformScale(_imgPicker.cameraViewTransform, scale, scale);
+              
               [self presentViewController:self.imgPicker animated:YES completion:nil];
           }
       }else{
@@ -287,6 +303,7 @@
         _imgPicker =  [[UIImagePickerController alloc]init];
         _imgPicker.delegate = self;
         _imgPicker.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
+       
     }
     return _imgPicker;
 }
@@ -296,7 +313,8 @@
     CGFloat w = SW/3;
     CGFloat rate =  w/imgSize.width;
     CGFloat h = imgSize.height*rate;
-    CGRect rect = CGRectMake(center.x-w/2, center.y-64-h/2, w, h);
+    CGRect rect = CGRectMake(center.x-w/2, center.y-40-h/2, w, h);
+//    CGRect rect = CGRectMake(center.x-w/2, 140, w, h);
     _imgRect =  rect;
     return _imgRect;
 }

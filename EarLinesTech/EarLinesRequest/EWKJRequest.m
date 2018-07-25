@@ -46,7 +46,7 @@
                         
                         @"POST:address/address/save",//p,  //保存用户地址信息
                         
-                        @"GET/POST:address/address/delete?addressId={addressId}",//pg,    //删除用户地址信息
+                        @"DELETE:address/address/delete?addressId={addressId}",//pg,    //删除用户地址信息
                         
                         @"GET:address/address?addressId={addressId}",   //根据地址ID获取地址信息
                         
@@ -103,14 +103,15 @@
                         
 #pragma mark - 耳纹分析
                         @"POST:earprints/analyze",//p  耳纹分析
+                        @"POST:earprints/myearprints",// 我的耳纹
                         
 #pragma mark - 商城
                         
                         @"GET:cart/cartitem/quantity",//获取购物车中的商品数量
                         @"POST:cart/cartitem/add",//  添加商品到购物车
-                        @"POST:cart/cartitem/quantity",//调整购物车中商品的数量物车
+                        @"POST:cart/cartitem/quantity",//调整购物车中商品的数量
                         @"POST:cart/cartitem/selected",//选中或取消选中购物车中的商品
-                        @"DELETE:cart/cartitem",//删除购物车中的商品
+                        @"POST:cart/cartitem",//删除购物车中的商品
                         @"GET:Cart",//获取购物车中的商品
                         
                         
@@ -118,6 +119,18 @@
                         @"POST:productcategory/save",//添加修改商品分类(用于管理平台)
                         @"DELETE:productcategory/delete?id={id}",//删除商品分类(用于管理平台)
                         @"GET:ProductCategory",//获取商品分类(用于管理平台)
+                        
+#pragma mark - 订单管理
+                        @"GET:order/checkout",
+                        @"POST:order/create",
+                        @"POST:order/submit",
+                        @"GET:order/myorders?status={status}&pageSize={pageSize}&pageIndex={pageIndex}",
+                        @"GET:order/detail?orderId={orderId}&merchantOrderId={merchantOrderId}",
+                        @"GET:order/express/trackinginfo?merchantOrderId={merchantOrderId}",
+                        @"DELETE:order/delete?orderId={orderId}",
+                        @"POST:order/refund",
+                        @"GET:order/express/trackinginfo?merchantOrderId={merchantOrderId}",
+                        @"POST:order/refund/cancel",
                         nil];
         
     });
@@ -130,7 +143,7 @@
 
 
 #pragma mark - 通用请求mothod
--(void)requestWithAPIId:(API_ID)api  httphead:(NSString*)head  bodyParaDic:(NSDictionary*)paraDic completed:(successBlock)success error:(failureBlock)failure{
+-(void)requestWithAPIId:(API_ID)api  httphead:(NSString*)head  bodyParaDic:(NSDictionary*)paraDic completed:(successBlock)success error:(failureBlockCode)failure{
     
     if (api >= _Apis.count ) {
         return;
@@ -144,7 +157,7 @@
     if ([useApi containsString:@"{"] && [useApi containsString:@"}"] && head) {
         NSRange range = [useApi rangeOfString:@"{"];
         useApi = [useApi substringToIndex:range.location];
-        useApi = [useApi stringByAppendingString:[NSString stringWithFormat:@"{%@}",head]];
+        useApi = [useApi stringByAppendingString:[NSString stringWithFormat:@"%@",head]];
     }
     NSString *url = [httpHead stringByAppendingString:useApi];
    
@@ -167,9 +180,9 @@
         if(success){
             success(responseObject);
         }
-    } failure:^(NSError *error) {
-        if(failure){
-            failure(error);
+    } failure:^(NSError *error, NSInteger errorCode) {
+        if (failure) {
+            failure(error,errorCode);
         }
     }];
     
@@ -179,7 +192,7 @@
    
     
     
--(void)uploadWithAPIId:(API_ID)api Icons:(NSArray <UploadParam*>*)uploadIcons completed:(successBlock)success error:(failureBlock)failure;{
+-(void)uploadWithAPIId:(API_ID)api Icons:(NSArray <UploadParam*>*)uploadIcons completed:(successBlock)success error:(failureBlockCode)failure;{
     
     if (api >= _Apis.count ) {
         return;
@@ -194,9 +207,9 @@
             if(success){
                 success(responseObject);
             }
-        } failure:^(NSError *error) {
-            if(failure){
-                failure(error);
+        } failure:^(NSError *error, NSInteger errorCode) {
+            if (failure) {
+                failure(error,errorCode);
             }
         }];
     }
@@ -205,12 +218,7 @@
 
 
 
-//Admin
--(NSString*)getAdminApi{
-    
-    //搜索用户列表(用于管理平台)
-    return  @"admin/user/search";
-}
+
 
 
 

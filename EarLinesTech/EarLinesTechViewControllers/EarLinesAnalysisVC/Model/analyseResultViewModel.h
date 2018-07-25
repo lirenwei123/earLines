@@ -16,6 +16,7 @@
 
 @property(nonatomic,copy) NSString *title;
 @property(nonatomic,copy) NSString *content;
+@property(nonatomic,strong)NSString *ImgUrl;;
 @property(nonatomic,assign)CGFloat cellHeight;
 @property(nonatomic,assign)CGFloat contentHeight;
 

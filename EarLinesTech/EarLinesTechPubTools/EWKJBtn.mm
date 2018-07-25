@@ -16,6 +16,11 @@
 @property(nonatomic,strong)UIImage * ableIMG;
 @property(nonatomic,strong)UIImage * clickedIMG;
 
+
+@property(nonatomic,strong)UIImage * normalIMG;
+@property(nonatomic,strong)UIImage * selectedIMG;
+@property(nonatomic,strong)UIImageView *bgimgv;
+
 @end
 
 
@@ -25,9 +30,9 @@
 #define H frame.size.height
 -(instancetype)initWithFrame:(CGRect)frame  img:(UIImage *)img title:(NSString *)title touchEvent:(T)event andbtnType:(BTNTYPE)type{
     if (self = [super initWithFrame:frame]) {
-        UIImageView *imgv = [[UIImageView alloc]initWithFrame:CGRectMake(W*0.4-H*0.5, H*0.25, H*0.5, H*0.5)];
+        UIImageView *imgv = [[UIImageView alloc]initWithFrame:CGRectMake(0, 0, H, H)];
         imgv.image = img;
-        UILabel *lab = [[UILabel alloc]initWithFrame:CGRectMake(W*0.5, H*0.1, W*0.5, H*0.8)];
+        UILabel *lab = [[UILabel alloc]initWithFrame:CGRectMake(H, H*0.1, W-H, H*0.8)];
         lab.text  = title;
         lab.textAlignment = NSTextAlignmentCenter;
         _lab = lab;
@@ -55,12 +60,13 @@
             [self addSubview:lab];
         }
        else if (type == BTNTYPEIMG) {
-            imgv.frame = CGRectMake(W*0.1, H*0.1,W*0.8,H*0.8 );
+            imgv.frame = CGRectMake(0, 0,W,H );
             [self addSubview:imgv];
         }
        else if (type == BTNTYPETEXT) {
-            lab.frame = CGRectMake(W*0.1, H*0.2,W*0.8,H*0.6 );
+            lab.frame = CGRectMake(0, 0,W,H );
             [self addSubview:lab];
+           lab.textAlignment = NSTextAlignmentCenter;
         }
        else if (type == BTNTYPEEWKJ){
            lab.frame = self.bounds;
@@ -103,7 +109,7 @@
            rightLab.textAlignment = NSTextAlignmentCenter;
            _rightDetailLab = rightLab;
            
-           UIImageView *rightIMGV =  [[UIImageView alloc]initWithFrame:CGRectMake(W-10, (H-20)/2, 10, 20)];
+           UIImageView *rightIMGV =  [[UIImageView alloc]initWithFrame:CGRectMake(W-10, (H-15)/2, 10, 15)];
            rightIMGV.image  =  [UIImage imageNamed:@"Personal_l"];
            [self addSubview:rightIMGV];
            rightIMGV.userInteractionEnabled = YES;
@@ -117,13 +123,23 @@
            imgv.frame  = CGRectMake(0, H*0.25, H*0.5, H*0.5);
            lab.frame = CGRectMake(H*0.5 +8, 0, 200, H);
            lab.textAlignment = NSTextAlignmentLeft;
-           UIImageView *rightIMGV =  [[UIImageView alloc]initWithFrame:CGRectMake(W-10, (H-20)/2, 10, 20)];
+           UIImageView *rightIMGV =  [[UIImageView alloc]initWithFrame:CGRectMake(W-10, (H-15)/2, 10, 15)];
            rightIMGV.image  =  [UIImage imageNamed:@"Personal_l"];
            [self addSubview:rightIMGV];
            rightIMGV.userInteractionEnabled = YES;
            [self addSubview:lab];
            [self addSubview:imgv];
            [self addSubview:rightIMGV];
+       } else if (type == BTNTYPEEWKJ_personalCenterTextOnly){
+           imgv.frame  = CGRectMake(0, H*0.25, H*0.5, H*0.5);
+           lab.frame = CGRectMake(H*0.5 +8, 0, 200, H);
+           lab.textAlignment = NSTextAlignmentLeft;
+           UILabel  *rightLab =  [[UILabel alloc]initWithFrame:CGRectMake(W-10-100, 0, 100, H)];
+           rightLab.textAlignment = NSTextAlignmentRight;
+           _rightDetailLab = rightLab;
+           [self addSubview:rightLab];
+           [self addSubview:lab];
+           [self addSubview:imgv];
        }else if (type == BTNTYPE_mallClass){
            imgv.frame = CGRectMake(0, 0,W,60 );
            lab.frame = CGRectMake(0, 60, W, H-60);
@@ -181,11 +197,39 @@
     
 }
 
+-(instancetype)initWithFrame:(CGRect)frame normalBackImg:(UIImage *)img1 selectBackImg:(UIImage *)img2 title:(NSString *)title  img:(UIImage *)img touchEvent:(T)event{
+    if (self = [super initWithFrame:frame]) {
+        
+        
+        UIImageView *bgimgv = [[UIImageView alloc]initWithFrame:self.bounds];
+        bgimgv.image = img1;
+        [self addSubview:bgimgv];
+        bgimgv.userInteractionEnabled = YES;
+        _bgimgv= bgimgv;
+        
+        UIImageView *imgv = [[UIImageView alloc]initWithFrame:CGRectMake(5, 5, H-10, H-10)];
+        imgv.userInteractionEnabled = YES;
+        imgv.image = img;
+        UILabel *lab = [[UILabel alloc]initWithFrame:CGRectMake(H+5, 0, W-H-5, H)];
+        lab.text  = title;
+        _lab = lab;
+        _imgv = imgv;
+        
+        _normalIMG = img1;
+        _selectedIMG = img2;
+        
+        [self addSubview:imgv];
+        [self addSubview:lab];
+    }
+    _touchEvent = event;
+         return self;
+}
+
 
 -(instancetype)initEWKJDetailBtnFrame:(CGRect)frame Title:(NSString *)title touchEvent:(T)event{
  
     if (self = [super initWithFrame:frame]) {
-        UIImageView *imgv = [[UIImageView alloc]initWithFrame:CGRectMake(W-20,(H-20)/2, 10, 20)];
+        UIImageView *imgv = [[UIImageView alloc]initWithFrame:CGRectMake(W-20,(H-15)/2, 10, 15)];
         UIImage* image = [UIImage imageNamed:@"Personal_l"];
         if (image) {
             imgv.image =  image;
@@ -209,7 +253,7 @@
 
 -(instancetype)initEWKJDetailBtnFrame:(CGRect)frame ImageName:(NSString *)imgName touchEvent:(T)event{
     if (self = [super initWithFrame:frame]) {
-        UIImageView *imgv = [[UIImageView alloc]initWithFrame:CGRectMake(W-20,(H-20)/2, 10, 20)];
+        UIImageView *imgv = [[UIImageView alloc]initWithFrame:CGRectMake(W-20,(H-15)/2, 10, 15)];
         UIImage* image = [UIImage imageNamed:@"Personal_l"];
         if (image) {
             imgv.image =  image;
@@ -273,5 +317,15 @@
 
 }
 
+-(void)setSelected:(BOOL)selected{
+    _selected = selected;
+    if (_bgimgv) {
+        if (_selected) {
+            _bgimgv.image = _selectedIMG;
+        }else{
+            _bgimgv.image = _normalIMG;
+        }
+    }
+}
 
 @end
