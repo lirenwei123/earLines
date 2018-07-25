@@ -292,6 +292,7 @@
 		FB40DAAC2109094800E0930F /* pay_zfb@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = FB40DAAA2109094700E0930F /* pay_zfb@2x.png */; };
 		FB40DAAF2109096E00E0930F /* pay_jf@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = FB40DAAD2109096D00E0930F /* pay_jf@2x.png */; };
 		FB40DAB02109096E00E0930F /* pay_jf@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = FB40DAAE2109096D00E0930F /* pay_jf@3x.png */; };
+		FB40DAB3210910CB00E0930F /* RealNameAuthenticationCtrl.m in Sources */ = {isa = PBXBuildFile; fileRef = FB40DAB2210910CB00E0930F /* RealNameAuthenticationCtrl.m */; };
 		FB56F8FC20A07469002543AC /* analyseResult.m in Sources */ = {isa = PBXBuildFile; fileRef = FB56F8F820A07468002543AC /* analyseResult.m */; };
 		FB56F8FD20A07469002543AC /* Items.m in Sources */ = {isa = PBXBuildFile; fileRef = FB56F8FB20A07469002543AC /* Items.m */; };
 		FB56F90E20A9D162002543AC /* wr@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = FB56F90A20A9D161002543AC /* wr@2x.png */; };
@@ -760,6 +761,8 @@
 		FB40DAAA2109094700E0930F /* pay_zfb@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "pay_zfb@2x.png"; sourceTree = "<group>"; };
 		FB40DAAD2109096D00E0930F /* pay_jf@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "pay_jf@2x.png"; sourceTree = "<group>"; };
 		FB40DAAE2109096D00E0930F /* pay_jf@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "pay_jf@3x.png"; sourceTree = "<group>"; };
+		FB40DAB1210910CB00E0930F /* RealNameAuthenticationCtrl.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RealNameAuthenticationCtrl.h; sourceTree = "<group>"; };
+		FB40DAB2210910CB00E0930F /* RealNameAuthenticationCtrl.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RealNameAuthenticationCtrl.m; sourceTree = "<group>"; };
 		FB56F8F720A07468002543AC /* analyseResultDataModels.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = analyseResultDataModels.h; sourceTree = "<group>"; };
 		FB56F8F820A07468002543AC /* analyseResult.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = analyseResult.m; sourceTree = "<group>"; };
 		FB56F8F920A07468002543AC /* analyseResult.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = analyseResult.h; sourceTree = "<group>"; };
@@ -1808,6 +1811,8 @@
 				1824549220889E9300A8E0D6 /* selectHeadPhotoCtrl.m */,
 				1866BE59208994B20046E8A5 /* MyEarLinesTestedCtrl.h */,
 				1866BE5A208994B20046E8A5 /* MyEarLinesTestedCtrl.m */,
+				FB40DAB1210910CB00E0930F /* RealNameAuthenticationCtrl.h */,
+				FB40DAB2210910CB00E0930F /* RealNameAuthenticationCtrl.m */,
 				1866BE4120898FC70046E8A5 /* MyCollection */,
 				1866BE3D20898FC70046E8A5 /* MyOrder */,
 				1866BE4920898FC70046E8A5 /* MyOrderAddress */,
@@ -2210,6 +2215,7 @@
 				FB40DA4F2108F2F700E0930F /* UIButtonManager.m in Sources */,
 				FB40DA342108F18A00E0930F /* Merchants.m in Sources */,
 				FB40DA872108F79000E0930F /* TrackingItems.m in Sources */,
+				FB40DAB3210910CB00E0930F /* RealNameAuthenticationCtrl.m in Sources */,
 				FBE28F1A20B320BC005537A7 /* MKAnnotationView+WebCache.m in Sources */,
 				FB36FF802084F0A6008A986E /* PersonalCenterCtrl.m in Sources */,
 				FB33AE092087A16E004A7D8C /* UIActivityIndicatorView+AFNetworking.m in Sources */,

@@ -18,6 +18,7 @@ NSString *const kUSERBaseClassAccount = @"Account";
 NSString *const kUSERBaseClassUniqueId = @"UniqueId";
 NSString *const kUSERBaseClassExpirationDt = @"ExpirationDt";
 NSString *const kUSERBaseClasspwd = @"pwd";
+NSString *const kUSERBaseClassRealNameAuthenticationInd = @"RealNameAuthenticationInd";
 
 
 @interface USERBaseClass ()
@@ -38,6 +39,7 @@ NSString *const kUSERBaseClasspwd = @"pwd";
 @synthesize uniqueId = _uniqueId;
 @synthesize expirationDt = _expirationDt;
 @synthesize pwd = _pwd;
+@synthesize RealNameAuthenticationInd = _RealNameAuthenticationInd;
 
 
 
@@ -69,6 +71,7 @@ NSString *const kUSERBaseClasspwd = @"pwd";
             self.account = [self objectOrNilForKey:kUSERBaseClassAccount fromDictionary:dict];
             self.uniqueId = [[self objectOrNilForKey:kUSERBaseClassUniqueId fromDictionary:dict]intValue];
             self.expirationDt = [self objectOrNilForKey:kUSERBaseClassExpirationDt fromDictionary:dict];
+        self.RealNameAuthenticationInd = [self objectOrNilForKey:kUSERBaseClassRealNameAuthenticationInd fromDictionary:dict];
 
     }
     
@@ -87,6 +90,7 @@ NSString *const kUSERBaseClasspwd = @"pwd";
     [mutableDict setValue:self.account forKey:kUSERBaseClassAccount];
     [mutableDict setValue:[NSNumber numberWithInt:self.uniqueId] forKey:kUSERBaseClassUniqueId];
     [mutableDict setValue:self.expirationDt forKey:kUSERBaseClassExpirationDt];
+    
    
     return [NSDictionary dictionaryWithDictionary:mutableDict];
 }
@@ -117,6 +121,7 @@ NSString *const kUSERBaseClasspwd = @"pwd";
     self.uniqueId = [aDecoder decodeDoubleForKey:kUSERBaseClassUniqueId];
     self.expirationDt = [aDecoder decodeObjectForKey:kUSERBaseClassExpirationDt];
     self.pwd = [aDecoder decodeObjectForKey:kUSERBaseClasspwd];
+    self.RealNameAuthenticationInd = [aDecoder decodeObjectForKey:kUSERBaseClassRealNameAuthenticationInd];
     return self;
 }
 
@@ -133,6 +138,7 @@ NSString *const kUSERBaseClasspwd = @"pwd";
     [aCoder encodeDouble:_uniqueId forKey:kUSERBaseClassUniqueId];
     [aCoder encodeObject:_expirationDt forKey:kUSERBaseClassExpirationDt];
     [aCoder encodeObject:_pwd forKey:kUSERBaseClasspwd];
+    [aCoder encodeBool:_RealNameAuthenticationInd forKey:kUSERBaseClassRealNameAuthenticationInd];
 }
 
 - (id)copyWithZone:(NSZone *)zone {
@@ -152,6 +158,7 @@ NSString *const kUSERBaseClasspwd = @"pwd";
         copy.uniqueId = self.uniqueId;
         copy.expirationDt = [self.expirationDt copyWithZone:zone];
         copy.pwd = [self.pwd copyWithZone:zone];
+        copy.RealNameAuthenticationInd = self.RealNameAuthenticationInd;
     }
     
     return copy;

@@ -158,9 +158,9 @@ typedef NS_ENUM(NSUInteger, PERSONALCENTER_FUNCTION) {
     CGFloat top  = 101 +navigationBottom;
     CGFloat h = 44;
     
-    NSArray *names = @[@"我的订单",@"查看全部订单",@"待付款",@"待发货",@"待收货",@"待退货",@"我的购物车",@"我的耳纹",@"我的收藏",@"联系地址",@"个人资料",@"我的推荐",@"积分明细",@"系统消息",@"版本信息"];
-    NSArray *imgnames =@[@"Personal_Center_Shopping",@"Personal_l",@"Personal_Center_icon_1",@"Personal_Center_icon_2",@"Personal_Center_icon_3",@"Personal_Center_icon_4",@"Personal_Center_list_1@2x",@"Personal_Center_list_2",@"Personal_Center_list_3",@"landmark",@"Personal_Center_list_5",@"recommend_Center_icon_4",@"integral_Center_icon_4",@"mage_Center_icon_3",@"Personal_Center_icon_50"];
-      _classSrings = @[@"MyOrderCtrl",@"MyOrderCtrl",@"MyOrderCtrl",@"MyOrderCtrl",@"MyOrderCtrl",@"MyShoppingCartCtrl",@"AnalysisResultViewController",@"MyCollectionCtrl",@"AddressViewController",@"PersonalDataCtrl",@"MineAdviceViewController",@"ScoreDetailViewController",@"SystemMessageCtrl"];
+    NSArray *names = @[@"我的订单",@"查看全部订单",@"待付款",@"待发货",@"待收货",@"待退货",@"我的购物车",@"我的耳纹",@"我的收藏",@"联系地址",@"个人资料",@"实名认证",@"我的推荐",@"积分明细",@"系统消息",@"版本信息"];
+    NSArray *imgnames =@[@"Personal_Center_Shopping",@"Personal_l",@"Personal_Center_icon_1",@"Personal_Center_icon_2",@"Personal_Center_icon_3",@"Personal_Center_icon_4",@"Personal_Center_list_1@2x",@"Personal_Center_list_2",@"Personal_Center_list_3",@"landmark",@"Personal_Center_list_5",@"mage_Center_icon_001",@"recommend_Center_icon_4",@"integral_Center_icon_4",@"mage_Center_icon_3",@"Personal_Center_icon_50"];
+      _classSrings = @[@"MyOrderCtrl",@"MyOrderCtrl",@"MyOrderCtrl",@"MyOrderCtrl",@"MyOrderCtrl",@"MyShoppingCartCtrl",@"AnalysisResultViewController",@"MyCollectionCtrl",@"AddressViewController",@"PersonalDataCtrl",@"RealNameAuthenticationCtrl",@"MineAdviceViewController",@"ScoreDetailViewController",@"SystemMessageCtrl"];
     
     UIView *bg =  [[UIView alloc]initWithFrame:CGRectMake(0, top, SW, 44+88+(names.count-6) *42)];
     bg.backgroundColor = [UIColor whiteColor];
@@ -257,6 +257,11 @@ typedef NS_ENUM(NSUInteger, PERSONALCENTER_FUNCTION) {
             if([Ctrl isKindOfClass:[MyOrderCtrl class]]){
                 MyOrderCtrl *order = (MyOrderCtrl*)Ctrl;
                 order.orderState = (OrderState)classIndex;
+            }else if ([Ctrl isKindOfClass:NSClassFromString(@"RealNameAuthenticationCtrl")]){
+                if (![USERBaseClass user].RealNameAuthenticationInd) {
+                    [self alertWithString:@"您已通过认证!"];
+                    return;
+                }
             }
             
             Ctrl.title = classString;

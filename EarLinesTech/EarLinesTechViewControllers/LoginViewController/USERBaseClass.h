@@ -21,6 +21,7 @@
 @property (nonatomic, copy) NSString *pwd;
 @property (nonatomic, assign) int uniqueId;
 @property (nonatomic, copy) NSString *expirationDt;//登录时间
+@property (nonatomic, assign)BOOL RealNameAuthenticationInd;
 
 
 
