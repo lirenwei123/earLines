@@ -65,7 +65,7 @@
     
     
     //微信支付
-    [WXApi registerApp:@"wx71d5c80bda7ae0e1"];
+    [WXApi registerApp:@"wxc40e16f3ba6ebabc"];
     
     
     return YES;
@@ -128,7 +128,7 @@
         }];
         return YES;
 //    }else if([url.host isEqualToString:@"pay"]){
-          }else if([url.scheme isEqualToString:@"wx71d5c80bda7ae0e1"]){
+    }else if([url.scheme isEqualToString:@"wxc40e16f3ba6ebabc"]){
         
         return  [WXApi handleOpenURL:url delegate:[WXApiManager sharedManager]];
     }
