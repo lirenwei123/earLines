@@ -258,7 +258,7 @@ typedef NS_ENUM(NSUInteger, PERSONALCENTER_FUNCTION) {
                 MyOrderCtrl *order = (MyOrderCtrl*)Ctrl;
                 order.orderState = (OrderState)classIndex;
             }else if ([Ctrl isKindOfClass:NSClassFromString(@"RealNameAuthenticationCtrl")]){
-                if (![USERBaseClass user].RealNameAuthenticationInd) {
+                if ([USERBaseClass user].RealNameAuthenticationInd) {
                     [self alertWithString:@"您已通过认证!"];
                     return;
                 }
