@@ -120,7 +120,14 @@
            [self addSubview:_rightDetailLab];
        }
        else if (type == BTNTYPEEWKJ_personalCenter){
-           imgv.frame  = CGRectMake(0, H*0.25, H*0.5, H*0.5);
+           float wh = img.size.height/img.size.width;
+           if (wh<1) {
+               imgv.frame  = CGRectMake(0, H*0.25, H*0.5/wh, H*0.5);
+           }else if (wh>1){
+                imgv.frame  = CGRectMake(0, H*0.25, H*0.5, H*0.5*wh);
+           }else{
+               imgv.frame  = CGRectMake(0, H*0.25, H*0.5, H*0.5);
+           }
            lab.frame = CGRectMake(H*0.5 +8, 0, 200, H);
            lab.textAlignment = NSTextAlignmentLeft;
            UIImageView *rightIMGV =  [[UIImageView alloc]initWithFrame:CGRectMake(W-10, (H-15)/2, 10, 15)];
