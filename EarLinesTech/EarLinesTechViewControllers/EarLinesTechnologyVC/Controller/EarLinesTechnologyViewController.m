@@ -26,9 +26,9 @@
 
 -(void)addUI{
     self.navigationTitle.text = @"耳纹科技";
-    UIImageView *imgv = [[UIImageView alloc]initWithFrame:CGRectMake(0, navigationBottom, SW, 200)];
+    UIImageView *imgv = [[UIImageView alloc]initWithFrame:CGRectMake(0, 0, SW, 200)];
     imgv.image = [UIImage imageNamed:@"js_bg"];
-    [self.view addSubview:imgv];
+   
     
     UILabel *lab = [[UILabel alloc]initWithFrame:CGRectMake(0, 20, SW, 20)];
     lab.textAlignment = NSTextAlignmentCenter;
@@ -61,14 +61,14 @@
     
     CGFloat h = [content boundingRectWithSize:CGSizeMake(SW-40, MAXFLOAT) options:NSStringDrawingUsesLineFragmentOrigin|NSStringDrawingUsesFontLeading|NSStringDrawingUsesDeviceMetrics|NSStringDrawingTruncatesLastVisibleLine  attributes:@{NSFontAttributeName :[UIFont systemFontOfSize:15]} context:nil].size.height;
     
-    UILabel *textV = [[UILabel alloc]initWithFrame:CGRectMake(20, 0, SW-40, h)];
+    UILabel *textV = [[UILabel alloc]initWithFrame:CGRectMake(20, 220, SW-40, h)];
     textV.font = EWKJfont(15);
     textV.textColor = COLOR(0x51);
     textV.numberOfLines = 0;
     textV.attributedText = contentAttr;
     
     
-    UIScrollView *sc = [[UIScrollView alloc]initWithFrame:CGRectMake(20, CGRectGetMaxY(imgv.frame)+20, SW-40, SH-bottomHeight-CGRectGetMaxY(imgv.frame)-40)];
+    UIScrollView *sc = [[UIScrollView alloc]initWithFrame:CGRectMake(0, navigationBottom, SW, SH-bottomHeight-navigationBottom)];
     sc.backgroundColor = [UIColor clearColor];
     [self.view addSubview:sc];
     sc.showsVerticalScrollIndicator = NO;
@@ -86,7 +86,8 @@
         h = h+20 +imgH;
     }
     
-    [sc setContentSize:CGSizeMake(SW-40, h)];
+    [sc addSubview:imgv];
+    [sc setContentSize:CGSizeMake(SW, h+220)];
     
 }
 

@@ -23,6 +23,8 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
     
+    
+    _pwdTF.secureTextEntry = YES;
   UIImageView *  navigationBar = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, SW , navigationBottom)] ;
     navigationBar.image = [UIImage imageNamed:@"Head_portrait_bg"];
     navigationBar.userInteractionEnabled = YES ;
@@ -54,6 +56,7 @@
 
    
     self.loginBtn.layer.cornerRadius =  self.loginBtn.frame.size.height/2;
+    self.clearBtn.clipsToBounds = YES;
     self.clearBtn.layer.cornerRadius = self.clearBtn.frame.size.height/2;
    
 }

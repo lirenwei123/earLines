@@ -162,7 +162,7 @@ typedef NS_ENUM(NSUInteger, PERSONALCENTER_FUNCTION) {
     NSArray *imgnames =@[@"Personal_Center_Shopping",@"Personal_l",@"Personal_Center_icon_1",@"Personal_Center_icon_2",@"Personal_Center_icon_3",@"Personal_Center_icon_4",@"Personal_Center_list_1@2x",@"Personal_Center_list_2",@"Personal_Center_list_3",@"landmark",@"Personal_Center_list_5",@"mage_Center_icon_001",@"recommend_Center_icon_4",@"integral_Center_icon_4",@"mage_Center_icon_3",@"Personal_Center_icon_50"];
       _classSrings = @[@"MyOrderCtrl",@"MyOrderCtrl",@"MyOrderCtrl",@"MyOrderCtrl",@"MyOrderCtrl",@"MyShoppingCartCtrl",@"AnalysisResultViewController",@"MyCollectionCtrl",@"AddressViewController",@"PersonalDataCtrl",@"RealNameAuthenticationCtrl",@"MineAdviceViewController",@"ScoreDetailViewController",@"SystemMessageCtrl"];
     
-    UIView *bg =  [[UIView alloc]initWithFrame:CGRectMake(0, top, SW, 44+88+(names.count-6) *42)];
+    UIView *bg =  [[UIView alloc]initWithFrame:CGRectMake(0, top, SW, 44+88+(names.count-6) *42-5)];
     bg.backgroundColor = [UIColor whiteColor];
     [self.view addSubview:bg];
 

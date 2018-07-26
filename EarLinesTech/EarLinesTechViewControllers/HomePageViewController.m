@@ -217,21 +217,21 @@
     lab1.text = @"耳朵是您个人的专属ID";
     [_topImgV addSubview:lab1];
     
-    UILabel *lab2 = [[ UILabel alloc]initWithFrame:CGRectMake(20, CGRectGetMaxY(lab1.frame), SW/2-20, 20)];
+    UILabel *lab2 = [[ UILabel alloc]initWithFrame:CGRectMake(20, CGRectGetMaxY(lab1.frame)+5, SW/2-20, 15)];
     lab2.font = EWKJfont(12);
     lab2.text = @"耳纹识别人体分析软件";
     lab2.adjustsFontSizeToFitWidth =YES;
     [_topImgV addSubview:lab2];
     
-    UILabel *lab3 = [[ UILabel alloc]initWithFrame:CGRectMake(20, CGRectGetMaxY(lab2.frame), SW/2-30, 20)];
+    UILabel *lab3 = [[ UILabel alloc]initWithFrame:CGRectMake(20, CGRectGetMaxY(lab2.frame), SW/2-30, 15)];
     lab3.font = EWKJfont(12);
     lab3.numberOfLines = 1;
     lab3.adjustsFontSizeToFitWidth =YES;
     lab3.text = @"软著专利号:2018SR504313";
     [_topImgV addSubview:lab3];
     
-    UILabel *lab4 = [[ UILabel alloc]initWithFrame:CGRectMake(20, CGRectGetMaxY(lab3.frame), SW/2-30, 20)];
-    lab4.font = EWKJfont(10);
+    UILabel *lab4 = [[ UILabel alloc]initWithFrame:CGRectMake(20, CGRectGetMaxY(lab3.frame), SW/2, 20)];
+    lab4.font = EWKJfont(9);
     lab4.numberOfLines = 1;
     lab4.adjustsFontSizeToFitWidth =YES;
     lab4.text = @"软著著作权由戚如嬅耳纹科技(深圳)有限公司所有";

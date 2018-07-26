@@ -20,17 +20,17 @@
     [self addReturn];
     self.navigationTitle.text = @"实名认证";
     _tfs = @[].mutableCopy;
-    NSArray *names = @[@"姓名",@"身份证号码",@"银行卡号",@"手机号码"].copy;
+    NSArray *names = @[@"姓名:",@"身份证号码:",@"银行卡号:",@"手机号码:"].copy;
     CGFloat top = navigationBottom +20;
     for (int i =0; i<names.count; i++) {
         
-        UILabel *name = [[UILabel alloc]initWithFrame:CGRectMake(20, top+60*i, 80, 60)];
+        UILabel *name = [[UILabel alloc]initWithFrame:CGRectMake(20, top+60*i, 100, 60)];
         name.textColor = [UIColor grayColor];
         name.font = [UIFont systemFontOfSize:15];
         name.text = names[i];
         [self.view addSubview:name];
         
-        UITextField *tf = [[UITextField alloc]initWithFrame:CGRectMake(100, top+60*i, SW-120, 60)];
+        UITextField *tf = [[UITextField alloc]initWithFrame:CGRectMake(120, top+60*i, SW-140, 60)];
         tf.font = [UIFont systemFontOfSize:14];
         [_tfs addObject:tf];
         [self.view addSubview:tf];
@@ -93,12 +93,12 @@
         return;
     }
     
-    [self reuestRZ];
+    [self requestRZ];
     
     
 }
 
--(void)reuestRZ{
+-(void)requestRZ{
 //    POST api/user/realname/authentication
     NSDictionary *dict = @{@"RealName":[_tfs[0] text],
                            @"IdCardNumber":[_tfs[1] text],
@@ -106,12 +106,14 @@
                            @"Mobile":[_tfs[3] text]
                            };
     WeakSelf
-    [SVProgressHUD showWithStatus:@"正在认证..."];
+    [SVProgressHUD showWithStatus:@"认证中..."];
     [HttpRequest lirw_postWithURLString:[NSString stringWithFormat:@"%@user/realname/authentication",httpHead] parameters:@{Data:dict}.mutableCopy success:^(id responseObject) {
          [SVProgressHUD dismiss];
-        if (responseObject[@"ErrorMessage"]) {
-            [weakSelf alertWithString:responseObject[@"ErrorMessage"]];
+        NSString *tip = responseObject[@"ErrorMessage"];
+        if (!tip) {
+            tip = @"实名认证成功";
         }
+        [weakSelf alertWithString:tip];
     } failure:^(NSError *error, NSInteger errorCode) {
         [SVProgressHUD dismiss];
         [weakSelf TipWithErrorCode:errorCode];
