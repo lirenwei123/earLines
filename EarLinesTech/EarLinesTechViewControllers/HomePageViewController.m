@@ -195,6 +195,7 @@
     _topLogoLab.textAlignment = NSTextAlignmentCenter;
     [_topImgV addSubview:_topLogoLab];
     _topLogoLab.font = EWKJfont(16);
+    _topLogoLab.adjustsFontSizeToFitWidth = YES;
     _topLogoLab.numberOfLines = 1;
     _topLogoLab.textColor = [UIColor redColor];
     _topLogoLab.text = @"人类私人健康管理顾问";

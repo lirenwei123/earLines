@@ -66,6 +66,7 @@
     textV.textColor = COLOR(0x51);
     textV.numberOfLines = 0;
     textV.attributedText = contentAttr;
+   
     
     
     UIScrollView *sc = [[UIScrollView alloc]initWithFrame:CGRectMake(0, navigationBottom, SW, SH-bottomHeight-navigationBottom)];
