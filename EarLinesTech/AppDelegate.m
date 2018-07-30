@@ -58,14 +58,14 @@
     config.appKey = @"706dd7a544b4f5030a104b16";
     config.QQAppId = @"1106890737";//1106866420
     config.QQAppKey = @"p0RUFJAGp3Vtfun9";//FOAFu5y9q81PbqI0
-    config.WeChatAppId = @"wx71d5c80bda7ae0e1";//wxc40e16f3ba6ebabc
+    config.WeChatAppId = @"wx71d5c80bda7ae0e1";
     config.WeChatAppSecret = @"dcad950cd0633a27e353477c4ec12e7a";
     [JSHAREService setupWithConfig:config];
     [JSHAREService setDebug:NO];
     
     
     //微信支付
-    [WXApi registerApp:@"wxc40e16f3ba6ebabc"];
+    [WXApi registerApp:@"wx71d5c80bda7ae0e1"];
     
     
     return YES;
@@ -127,8 +127,8 @@
             NSLog(@"授权结果 authCode = %@", authCode?:@"");
         }];
         return YES;
-    }else if([url.host isEqualToString:@"pay"]){
-//    }else if([url.scheme isEqualToString:@"wxc40e16f3ba6ebabc"]){
+//    }else if([url.host isEqualToString:@"pay"]){
+    }else if([url.scheme isEqualToString:@"wx71d5c80bda7ae0e1"]){
         
         return  [WXApi handleOpenURL:url delegate:[WXApiManager sharedManager]];
     }
