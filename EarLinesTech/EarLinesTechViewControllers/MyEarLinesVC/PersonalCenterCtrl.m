@@ -222,7 +222,10 @@ typedef NS_ENUM(NSUInteger, PERSONALCENTER_FUNCTION) {
             [weakSelf clickWithFunction:btn.tag];
         } andbtnType:type];
         if (type == BTNTYPEEWKJ_personalCenterTextOnly) {
-            personThing.rightDetailLab.text = @"V1.01";
+            NSDictionary *infoDic = [[NSBundle mainBundle] infoDictionary];
+            NSString *version =  [infoDic valueForKey:@"CFBundleShortVersionString"];
+            NSString *build = [infoDic valueForKey:@"CFBundleVersion"];
+            personThing.rightDetailLab.text = [NSString stringWithFormat:@"V%@.%@",version,build];
             personThing.rightDetailLab.textColor = [UIColor grayColor];
         }
         personThing.imgv.contentMode = UIViewContentModeScaleAspectFit;

@@ -530,7 +530,7 @@
         pg.numberOfPages = adImgUrls.count;
         pg.currentPage = 0;
         _SCcurrentPage = 0;
-        pg.currentPageIndicatorTintColor = [UIColor blueColor];
+        pg.currentPageIndicatorTintColor = [UIColor whiteColor];
         pg.pageIndicatorTintColor = [UIColor grayColor];
         pg.enabled = NO;
 //        [pg addTarget:self action:@selector(pageChange:) forControlEvents:UIControlEventValueChanged];
