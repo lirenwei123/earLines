@@ -287,7 +287,7 @@
         cell = [merchantCell cell];
     }
     cell.contentView.backgroundColor = COLOR(243);
-    cell.item = _nearMerchantModels[indexPath.row];
+    cell.item =_nearMerchantModels[indexPath.row];
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
     return cell;
 }

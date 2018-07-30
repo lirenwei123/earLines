@@ -318,6 +318,7 @@
 		FB77808720ADF16200884FFB /* onlineshopCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FB77808520ADF16200884FFB /* onlineshopCollectionViewCell.m */; };
 		FB77808820ADF16200884FFB /* onlineshopCollectionViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = FB77808620ADF16200884FFB /* onlineshopCollectionViewCell.xib */; };
 		FB7780EC20AE0AAA00884FFB /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FB77806E20AC72E100884FFB /* MapKit.framework */; };
+		FB7A7B4A210F3BC000233F43 /* Agencies.m in Sources */ = {isa = PBXBuildFile; fileRef = FB7A7B48210F3BBF00233F43 /* Agencies.m */; };
 		FB89AEC8208E26E00051DDA2 /* EarLinesTechnologyViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FB89AEC6208E26E00051DDA2 /* EarLinesTechnologyViewController.m */; };
 		FB89AECB208E27550051DDA2 /* TJSPCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FB89AECA208E27550051DDA2 /* TJSPCollectionViewCell.m */; };
 		FB9E7F2F207BA75700B8ED11 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = FB9E7F2E207BA75700B8ED11 /* AppDelegate.m */; };
@@ -800,6 +801,8 @@
 		FB77808420ADF16200884FFB /* onlineshopCollectionViewCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = onlineshopCollectionViewCell.h; sourceTree = "<group>"; };
 		FB77808520ADF16200884FFB /* onlineshopCollectionViewCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = onlineshopCollectionViewCell.m; sourceTree = "<group>"; };
 		FB77808620ADF16200884FFB /* onlineshopCollectionViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = onlineshopCollectionViewCell.xib; sourceTree = "<group>"; };
+		FB7A7B48210F3BBF00233F43 /* Agencies.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Agencies.m; sourceTree = "<group>"; };
+		FB7A7B49210F3BC000233F43 /* Agencies.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Agencies.h; sourceTree = "<group>"; };
 		FB89AEC5208E26E00051DDA2 /* EarLinesTechnologyViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EarLinesTechnologyViewController.h; sourceTree = "<group>"; };
 		FB89AEC6208E26E00051DDA2 /* EarLinesTechnologyViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EarLinesTechnologyViewController.m; sourceTree = "<group>"; };
 		FB89AEC9208E27550051DDA2 /* TJSPCollectionViewCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TJSPCollectionViewCell.h; sourceTree = "<group>"; };
@@ -1656,6 +1659,8 @@
 		FB77807320AC8C9800884FFB /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				FB7A7B49210F3BC000233F43 /* Agencies.h */,
+				FB7A7B48210F3BBF00233F43 /* Agencies.m */,
 				FB40D9DF2108E56400E0930F /* AlipayPaymentData.h */,
 				FB40D9DE2108E56400E0930F /* AlipayPaymentData.m */,
 				FB40D9DB2108E55200E0930F /* WechatPaymentData.h */,
@@ -2252,6 +2257,7 @@
 				FB40D9EB2108E60700E0930F /* WXApiResponseHandler.m in Sources */,
 				FB33ADCF2087A09E004A7D8C /* NSLayoutConstraint+MASDebugAdditions.m in Sources */,
 				FB36FE61207E6006008A986E /* LoginViewController.m in Sources */,
+				FB7A7B4A210F3BC000233F43 /* Agencies.m in Sources */,
 				FB33ADD32087A09E004A7D8C /* MASLayoutConstraint.m in Sources */,
 				FB33ADD72087A09E004A7D8C /* MASViewConstraint.m in Sources */,
 				FB40DA922109007000E0930F /* MyShoppingCartCtrl.m in Sources */,

@@ -127,8 +127,8 @@
             NSLog(@"授权结果 authCode = %@", authCode?:@"");
         }];
         return YES;
-//    }else if([url.host isEqualToString:@"pay"]){
-    }else if([url.scheme isEqualToString:@"wxc40e16f3ba6ebabc"]){
+    }else if([url.host isEqualToString:@"pay"]){
+//    }else if([url.scheme isEqualToString:@"wxc40e16f3ba6ebabc"]){
         
         return  [WXApi handleOpenURL:url delegate:[WXApiManager sharedManager]];
     }

@@ -5,4 +5,5 @@
 //  Copyright (c) 2018 __MyCompanyName__. All rights reserved.
 //
 
-#import "Banners.h"#import "Products.h"#import "MallHome.h"
+#import "Banners.h"#import "Products.h"#import "MallHome.h"
+#import "Agencies.h"

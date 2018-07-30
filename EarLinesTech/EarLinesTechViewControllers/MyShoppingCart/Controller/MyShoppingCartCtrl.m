@@ -32,7 +32,7 @@
 }
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
-   
+   [self requestCart];
 }
 
 -(void)addUI{
@@ -101,7 +101,7 @@
     [bootomV addSubview:jiesuan];
     [jiesuan addTarget:self action:@selector(jiesuanShop) forControlEvents:UIControlEventTouchUpInside];
     
-     [self requestCart];
+    
 }
 
 -(void)haveNoCart{

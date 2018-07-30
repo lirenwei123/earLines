@@ -8,6 +8,8 @@
 #import "MallHome.h"
 #import "Banners.h"
 #import "Products.h"
+#import "Agencies.h"
+
 
 
 NSString *const kMallHomeBanners = @"Banners";
@@ -50,8 +52,8 @@ NSString *const kMallHomeAgencies = @"Agencies";
     } else if ([receivedBanners isKindOfClass:[NSDictionary class]]) {
        [parsedBanners addObject:[Banners modelObjectWithDictionary:(NSDictionary *)receivedBanners]];
     }
-
     self.banners = [NSArray arrayWithArray:parsedBanners];
+        
     NSObject *receivedProducts = [dict objectForKey:kMallHomeProducts];
     NSMutableArray *parsedProducts = [NSMutableArray array];
     
@@ -65,8 +67,22 @@ NSString *const kMallHomeAgencies = @"Agencies";
        [parsedProducts addObject:[Products modelObjectWithDictionary:(NSDictionary *)receivedProducts]];
     }
 
-    self.products = [NSArray arrayWithArray:parsedProducts];
-            self.agencies = [self objectOrNilForKey:kMallHomeAgencies fromDictionary:dict];
+        self.products = [NSArray arrayWithArray:parsedProducts];
+        NSObject *receivedAgencies = [dict objectForKey:kMallHomeAgencies];
+    NSMutableArray *parsedAgencies = [NSMutableArray array];
+    
+    if ([receivedAgencies isKindOfClass:[NSArray class]]) {
+        for (NSDictionary *item in (NSArray *)receivedAgencies) {
+            if ([item isKindOfClass:[NSDictionary class]]) {
+                [parsedAgencies addObject:[Agencies modelObjectWithDictionary:item]];
+            }
+       }
+    } else if ([receivedAgencies isKindOfClass:[NSDictionary class]]) {
+       [parsedAgencies addObject:[Agencies modelObjectWithDictionary:(NSDictionary *)receivedAgencies]];
+    }
+
+    self.agencies = [NSArray arrayWithArray:parsedAgencies];
+
 
     }
     

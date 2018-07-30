@@ -16,7 +16,8 @@ typedef NS_ENUM(NSUInteger, OrderState) {
     OrderState_waitRec,
     OrderState_end,
     OrderState_tuiHuan,
-};
+};//    所有 = 0, 未付款 = 1, 待发货 = 2, 待收货 = 3, 完成 = 4, 退款 = 5
+
 @interface MyOrderCtrl : EWKJBaseViewController
 
     @property(nonatomic,assign)OrderState orderState;
