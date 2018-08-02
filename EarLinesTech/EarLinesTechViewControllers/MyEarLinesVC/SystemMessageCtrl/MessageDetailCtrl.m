@@ -46,7 +46,7 @@
     UILabel *content= [[UILabel alloc]initWithFrame:CGRectMake(0, 100, SW-20, h)];
     content.text = _message.content;
     content.numberOfLines = 0;
-    content.textAlignment = NSTextAlignmentCenter;
+    content.textAlignment = NSTextAlignmentLeft;
     content.font = EWKJfont(13);
     [sc addSubview:content];
     [sc setContentSize:CGSizeMake(SW-20, h+110)];

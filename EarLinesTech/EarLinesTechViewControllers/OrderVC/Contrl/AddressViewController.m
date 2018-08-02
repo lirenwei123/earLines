@@ -102,7 +102,11 @@
     WeakSelf
     [[EWKJRequest request]requestWithAPIId:addressApi8 httphead:[NSString stringWithFormat:@"%.0f",address.internalBaseClassIdentifier] bodyParaDic:nil completed:^(id datas) {
         if (weakSelf.type == adressFlag_select) {
-            [weakSelf.navigationController popViewControllerAnimated:NO];
+            if (!weakSelf.isPersonnalPageInto) {
+                [weakSelf.navigationController popViewControllerAnimated:NO];
+            }else{
+                [weakSelf requestAddressList];
+            }
         }
     } error:^(NSError *error, NSInteger statusCode) {
         

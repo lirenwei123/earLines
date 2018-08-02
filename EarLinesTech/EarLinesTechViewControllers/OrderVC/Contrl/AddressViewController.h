@@ -18,5 +18,5 @@ typedef NS_ENUM(NSUInteger, adressFlag) {
 @interface AddressViewController : EWKJBaseViewController
 
 @property(nonatomic,assign)adressFlag type;
-
+@property(nonatomic,assign)BOOL isPersonnalPageInto;
 @end

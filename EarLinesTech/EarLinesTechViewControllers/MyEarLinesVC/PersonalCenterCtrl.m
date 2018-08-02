@@ -13,6 +13,7 @@
 #import "MyCollectionCtrl.h"
 #import "AnalysisResultViewController.h"
 #import "UIImageView+WebCache.h"
+#import "AddressViewController.h"
 
 
 
@@ -265,6 +266,9 @@ typedef NS_ENUM(NSUInteger, PERSONALCENTER_FUNCTION) {
                     [self alertWithString:@"您已通过认证!"];
                     return;
                 }
+            }else if ([Ctrl isKindOfClass:[AddressViewController class]]){
+                AddressViewController *addressVC = (AddressViewController*)Ctrl;
+                addressVC.isPersonnalPageInto = YES;
             }
             
             Ctrl.title = classString;

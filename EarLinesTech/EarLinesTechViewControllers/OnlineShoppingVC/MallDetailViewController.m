@@ -40,7 +40,9 @@
 #pragma mark - 请求商品详情
 -(void)requestDetail{
     WeakSelf
+    [SVProgressHUD showWithStatus:@"加载中..."];
     [HttpRequest lrw_getWithURLString:[NSString stringWithFormat:@"%@mall/product/detail?productId=%d",httpHead,_productID] parameters:nil success:^(id responseObject) {
+        [SVProgressHUD dismiss];
         if (responseObject) {
             NSDictionary *dict = responseObject[Data];
             weakSelf.detailModel = [MallDetailModel modelObjectWithDictionary:dict];
@@ -48,6 +50,7 @@
         }
     } failure:^(NSError *error,NSInteger code) {
         [weakSelf TipWithErrorCode:code];
+        [SVProgressHUD dismiss];
         
     }];
 }
