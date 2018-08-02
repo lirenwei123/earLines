@@ -81,7 +81,7 @@
     for (int i = 0; i<3; i++) {
         UIImage *img = [UIImage imageNamed:[NSString stringWithFormat:@"专利证书%i",i+1]];
         CGFloat imgH = (SW-40)*img.size.height/img.size.width;
-        UIImageView *imgv = [[UIImageView alloc]initWithFrame:CGRectMake(20, h+20, SW-40,imgH)];
+        UIImageView *imgv = [[UIImageView alloc]initWithFrame:CGRectMake(20, h+240, SW-40,imgH)];
         imgv.image = img;
         [sc addSubview:imgv];
         h = h+20 +imgH;
