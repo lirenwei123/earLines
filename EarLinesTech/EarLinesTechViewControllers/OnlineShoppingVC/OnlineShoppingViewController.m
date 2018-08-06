@@ -10,6 +10,7 @@
 #import "MallHomeDataModels.h"
 #import "onlineshopCollectionViewCell.h"
 #import "UIImageView+WebCache.h"
+#import "UIButton+WebCache.h"
 #import "UIImage+WebP.h"
 #import "LocationManager.h"
 #import "SVProgressHUD.h"
@@ -523,18 +524,18 @@
 -(void)setAdWith:(NSArray *)adImgUrls{
     for (int i = 0 ; i<adImgUrls.count; i++) {
         
-        UIImageView *imgv = [[UIImageView alloc]initWithFrame:CGRectMake(i*SW, 0, SW, 190)];
+        UIButton *imgv = [[UIButton alloc]initWithFrame:CGRectMake(i*SW, 0, SW, 190)];
         Banners *banner = adImgUrls[i];
 //        [imgv sd_setImageWithURL:[NSURL URLWithString:banner.imageUrl]];
 
         if ([[banner.imageUrl substringWithRange:NSMakeRange(banner.imageUrl.length-4, 4)]isEqualToString:@"webp"]) {
-            imgv.image = [UIImage sd_imageWithWebPData:[NSData dataWithContentsOfURL:[NSURL URLWithString:banner.imageUrl]]];
+            [imgv setImage:[UIImage sd_imageWithWebPData:[NSData dataWithContentsOfURL:[NSURL URLWithString:banner.imageUrl]]] forState:0];
         }else{
-            [imgv sd_setImageWithURL:[NSURL URLWithString:banner.imageUrl]];
+            [imgv sd_setImageWithURL:[NSURL URLWithString:banner.imageUrl] forState:0];
         }
-        
-       
-        imgv.contentMode = UIViewContentModeScaleToFill;
+        [imgv addTarget:self action:@selector(touchAd:) forControlEvents:UIControlEventTouchUpInside];
+        imgv.tag = i;
+        imgv.imageView.contentMode = UIViewContentModeScaleAspectFit;
         [_adSc addSubview:imgv];
     }
     _adSc.contentSize =CGSizeMake(SW*adImgUrls.count, 190);
@@ -551,6 +552,15 @@
         pg.enabled = NO;
 //        [pg addTarget:self action:@selector(pageChange:) forControlEvents:UIControlEventValueChanged];
         _SCpg = pg;
+    }
+}
+
+-(void)touchAd:(UIButton*)sender{
+    if (sender.tag < _mallHomeModel.banners.count) {
+        Banners *baner  = _mallHomeModel.banners[sender.tag];
+        MallDetailViewController *detail = [[MallDetailViewController alloc]init];
+        detail.productID = baner.productId;
+        [self.navigationController pushViewController:detail animated:NO];
     }
 }
 

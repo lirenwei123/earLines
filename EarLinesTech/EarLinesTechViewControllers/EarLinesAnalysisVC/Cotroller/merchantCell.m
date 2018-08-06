@@ -41,6 +41,7 @@
     _item= item;
 
     [_imgv sd_setImageWithURL:[NSURL URLWithString:_item.imageUrl]];
+    _imgv.contentMode = UIViewContentModeScaleAspectFit;
     _describleLab.text = _item.merchantName;
     _adressLab.text = [NSString stringWithFormat:@"%@ %@",_item.streetName,_item.distance];
 }

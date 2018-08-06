@@ -100,6 +100,7 @@
             [headerView addSubview:_headerBGV];
             
             
+            
             //ad
             _adSc = [[UIScrollView alloc]initWithFrame:CGRectMake(0, 0, SW, 180)];
             _adSc.showsHorizontalScrollIndicator = NO;
@@ -217,7 +218,7 @@
         UIImageView *imgv = [[UIImageView alloc]initWithFrame:CGRectMake(i*SW, 0, SW, 180)];
         NSString *imgurl = adImgUrls[i];
         [imgv sd_setImageWithURL:[NSURL URLWithString:imgurl]];
-        imgv.contentMode = UIViewContentModeScaleAspectFill;
+        imgv.contentMode = UIViewContentModeScaleAspectFit;
         [_adSc addSubview:imgv];
     }
     _adSc.contentSize =CGSizeMake(SW*adImgUrls.count, 180);

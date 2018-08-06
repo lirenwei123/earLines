@@ -32,6 +32,7 @@
     _item = item;
     [_topIMGV sd_setImageWithURL:[NSURL URLWithString:_item.imageUrl]];
 //    [_topIMGV sd_setImageWithURL:[NSURL URLWithString:_item.imageUrl] placeholderImage:[UIImage imageNamed:@"index_btn"]];
+    _topIMGV.contentMode = UIViewContentModeScaleAspectFit;
     _contentLab.text = _item.productName;
     _priceLab.text =  [NSString stringWithFormat:@"￥ %.2f",_item.productPrice];
     
