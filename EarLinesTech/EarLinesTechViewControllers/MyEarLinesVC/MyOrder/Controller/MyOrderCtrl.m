@@ -37,7 +37,7 @@ CGFloat cellh = 80;
 - (void)addUI{
     _orderModels= @[].mutableCopy;
     //    _merchantModels = @[].mutableCopy;
-    [self requestOrder];
+//    [self requestOrder];
     self.navigationTitle.text = @"我的订单";
     self.view.backgroundColor = COLOR(249);
     

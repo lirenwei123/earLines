@@ -46,7 +46,7 @@
             /**
              *  请求超时的时间
              */
-                //    manager.requestSerializer.timeoutInterval = 5;
+//                    manager.requestSerializer.timeoutInterval = 30;
         });
         
     }

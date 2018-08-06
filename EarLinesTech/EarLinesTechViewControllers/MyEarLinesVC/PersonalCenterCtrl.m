@@ -57,6 +57,7 @@ typedef NS_ENUM(NSUInteger, PERSONALCENTER_FUNCTION) {
         weakSelf.cartMallCountLab.text =  [NSString stringWithFormat:@"%@",count] ;
                                              
     } error:^(NSError *error, NSInteger statusCode) {
+        [weakSelf TipWithErrorCode:statusCode];
 //        [weakSelf alertWithString:@"获取购物车商品数量失败"];
     }];
 }

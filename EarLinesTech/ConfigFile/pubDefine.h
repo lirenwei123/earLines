@@ -12,7 +12,7 @@
 
 
 
-#define DEBUG_MODE
+//#define DEBUG_MODE
 #define SD_WEBP 1
 
 #ifdef DEBUG_MODE
