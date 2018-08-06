@@ -227,11 +227,12 @@
     message.image = imageData;
 
     [[EWKJShare share]shareLinkWithJSHAREPlatform:form JSHAREMessage:message complete:^(JSHAREState state, NSError *error) {
-        if (error) {
-            [weakSelf alertWithString:[NSString stringWithFormat:@"%@",error]];
-        }else{
-            
-        }
+         [weakSelf alertWithString:@"请求错误"];
+//        if (error) {
+//            [weakSelf alertWithString:[NSString stringWithFormat:@"%@",error]];
+//        }else{
+//
+//        }
     }];
 }
      

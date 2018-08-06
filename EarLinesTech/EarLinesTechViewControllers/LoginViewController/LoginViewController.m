@@ -120,9 +120,7 @@
       
     } error:^(NSError *error,NSInteger code) {
          sender.enabled = YES;
-        if (error) {
-            [weakSelf alertWithString:[NSString stringWithFormat:@"%@",error]];
-        }
+        [weakSelf alertWithString:@"请求错误"];
     }];
     
 }

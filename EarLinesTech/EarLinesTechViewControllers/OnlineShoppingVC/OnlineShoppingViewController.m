@@ -45,6 +45,7 @@
 
 
 @property(nonatomic,strong)NSMutableArray *nearMerchantModels;
+@property(nonatomic,assign)NSInteger index;
 
 @end
 
@@ -55,8 +56,23 @@
     // Do any additional setup after loading the view.
      _nearMerchantModels = @[].mutableCopy;
     [self requestMallHomePage];
+    _index = 0;
+    [NSTimer scheduledTimerWithTimeInterval:3 target:self selector:@selector(adMove) userInfo:nil repeats:YES];
     
 }
+
+-(void)adMove{
+
+    if (_mallHomeModel.banners.count>1) {
+        _index++;
+        if (_index == _mallHomeModel.banners.count) {
+            _index = 0;
+        }
+        [_adSc setContentOffset:CGPointMake((_index)*SW, 0)];
+        _SCpg.currentPage = _index;
+    }
+}
+
 -(void)setUI{
     //菜单
    
@@ -466,7 +482,7 @@
                 NSArray *dataArray = (NSArray *)datas;
                 if (dataArray.count) {
                     //展示
-                    [self alertWithString:[NSString stringWithFormat:@"%@",dataArray]];
+//                    [self alertWithString:[NSString stringWithFormat:@"%@",dataArray]];
                 }else{
                     [self alertWithString:@"没有您搜索的商品！"];
                 }

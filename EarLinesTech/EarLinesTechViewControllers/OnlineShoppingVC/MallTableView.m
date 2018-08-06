@@ -443,7 +443,7 @@
                 NSArray *dataArray = (NSArray *)datas;
                 if (dataArray.count) {
                     //展示
-                    [self alertWithString:[NSString stringWithFormat:@"%@",dataArray]];
+//                    [self alertWithString:[NSString stringWithFormat:@"%@",dataArray]];
                 }else{
                     [self alertWithString:@"没有您搜索的商品！"];
                 }

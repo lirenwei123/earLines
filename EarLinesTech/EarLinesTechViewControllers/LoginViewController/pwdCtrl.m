@@ -148,9 +148,10 @@ static int mytime = 60;
             weakSelf.mytimer.fireDate =  [NSDate distantFuture];
             sender.enabled = YES;
             mytime = 60;
-            if(error ){
-                [weakSelf alertWithString:[NSString stringWithFormat:@"%@",error]];
-            }
+             [weakSelf alertWithString:@"请求错误"];
+//            if(error ){
+//                [weakSelf alertWithString:[NSString stringWithFormat:@"%@",error]];
+//            }
             
         }];
     
@@ -331,7 +332,8 @@ static int mytime = 60;
                 [weakSelf alertWithString:@"注册成功!"];
             }
         } error:^(NSError *error,NSInteger code) {
-            [weakSelf alertWithString:[NSString stringWithFormat:@"%@",error]];
+//            [weakSelf alertWithString:[NSString stringWithFormat:@"%@",error]];
+             [weakSelf alertWithString:@"请求错误"];
             sender.enabled = YES;
         }];
       

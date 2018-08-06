@@ -66,7 +66,8 @@
             [weakSelf.tab reloadData];
         }
     } failure:^(NSError *error, NSInteger errorCode) {
-        [weakSelf alertWithString:[NSString stringWithFormat:@"%@",error]];
+         [weakSelf alertWithString:@"请求错误"];
+//        [weakSelf alertWithString:[NSString stringWithFormat:@"%@",error]];
     }];
     
 }
