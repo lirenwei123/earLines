@@ -535,7 +535,7 @@
         }
         [imgv addTarget:self action:@selector(touchAd:) forControlEvents:UIControlEventTouchUpInside];
         imgv.tag = i;
-        imgv.imageView.contentMode = UIViewContentModeScaleAspectFit;
+        imgv.imageView.contentMode = UIViewContentModeScaleAspectFill;
         [_adSc addSubview:imgv];
     }
     _adSc.contentSize =CGSizeMake(SW*adImgUrls.count, 190);
