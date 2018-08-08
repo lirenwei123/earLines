@@ -27,6 +27,7 @@
 @property(nonatomic,assign)NSInteger currentBuyCount;
 
 @property(nonatomic,strong)MallDetailModel *detailModel;
+@property(nonatomic,assign)NSInteger index;
 @end
 
 @implementation MallDetailViewController
@@ -35,6 +36,18 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     [self requestDetail];
+    [NSTimer scheduledTimerWithTimeInterval:3 target:self selector:@selector(adMove) userInfo:nil repeats:YES];
+}
+-(void)adMove{
+    
+    if (_detailModel.imageUrls.count>1) {
+        _index++;
+        if (_index == _detailModel.imageUrls.count) {
+            _index = 0;
+        }
+        [_adSc setContentOffset:CGPointMake((_index)*SW, 0)];
+        _SCpg.currentPage = _index;
+    }
 }
 
 #pragma mark - 请求商品详情
@@ -81,7 +94,7 @@
     [self setAdWith:_detailModel.imageUrls];
     
     //商品
-    UILabel *mallDescrible = [[UILabel alloc]initWithFrame:CGRectMake(15, 200, SW-100, 20)];
+    UILabel *mallDescrible = [[UILabel alloc]initWithFrame:CGRectMake(15, 200, SW-30, 20)];
     mallDescrible.font = EWKJboldFont(14);
     mallDescrible.textColor = COLOR(0x33);
     mallDescrible.numberOfLines = 0;
@@ -153,13 +166,13 @@
     UILabel *spxq = [[UILabel alloc]initWithFrame:CGRectMake(0, 490, SW, 20)];
     spxq.textAlignment = NSTextAlignmentCenter;
     spxq.text = @"商品详情";
+    [_bgSc addSubview:spxq];
     
     CGFloat top = 520;
     for (int i =0 ; i< _detailModel.productDetailImages.count; i++) {
         NSString *imgurl = _detailModel.productDetailImages[i];
         
 //        float rate = [self imageHWRateWithimgDes:imgurl];
-        
         UIImage *image = [[UIImage alloc]initWithData:[NSData dataWithContentsOfURL:[NSURL URLWithString:imgurl]]];
         float rate = image.size.height/image.size.width;
         
@@ -242,7 +255,7 @@
         
         UIImageView *imgv = [[UIImageView alloc]initWithFrame:CGRectMake(i*SW, 0, SW, 180)];
         NSString *imgurl = adImgUrls[i];
-                [imgv sd_setImageWithURL:[NSURL URLWithString:imgurl]];
+        [imgv sd_setImageWithURL:[NSURL URLWithString:imgurl]];
         imgv.contentMode = UIViewContentModeScaleAspectFill;
         [_adSc addSubview:imgv];
     }
