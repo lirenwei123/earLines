@@ -174,6 +174,7 @@
 
 -(void)seletAddress{
     
+    [self.view endEditing:YES];
     if (!_pickView) {
         
         _pickView = [[BLAreaPickerView alloc] initWithFrame:CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, 150)];

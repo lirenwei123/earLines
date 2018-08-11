@@ -151,11 +151,11 @@
 -(void)TipWithErrorCode:(NSInteger)errorCode{
     if (errorCode == 401) {
         [self alertWithString:@"登录已过期，请重新登录账号"];
-//        LoginViewController *logvc = [[LoginViewController alloc]init];
-//        logvc.loginCompelete = ^{
-//            [self.navigationController popViewControllerAnimated:NO];
-//        };
-//        [self.navigationController pushViewController:logvc animated:NO];
+        LoginViewController *logvc = [[LoginViewController alloc]init];
+        logvc.loginCompelete = ^{
+            [self.navigationController popViewControllerAnimated:NO];
+        };
+        [self.navigationController pushViewController:logvc animated:NO];
     }else{
         
         [self alertWithString:[NSString stringWithFormat:@"errorcode = %ld",(long)errorCode]];

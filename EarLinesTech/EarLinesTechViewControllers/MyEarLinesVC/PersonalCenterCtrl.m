@@ -226,8 +226,8 @@ typedef NS_ENUM(NSUInteger, PERSONALCENTER_FUNCTION) {
         if (type == BTNTYPEEWKJ_personalCenterTextOnly) {
             NSDictionary *infoDic = [[NSBundle mainBundle] infoDictionary];
             NSString *version =  [infoDic valueForKey:@"CFBundleShortVersionString"];
-            NSString *build = [infoDic valueForKey:@"CFBundleVersion"];
-            personThing.rightDetailLab.text = [NSString stringWithFormat:@"V%@.%@",version,build];
+//            NSString *build = [infoDic valueForKey:@"CFBundleVersion"];
+            personThing.rightDetailLab.text = [NSString stringWithFormat:@"V%@",version];
             personThing.rightDetailLab.textColor = [UIColor grayColor];
         }
         personThing.imgv.contentMode = UIViewContentModeScaleAspectFit;

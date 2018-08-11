@@ -100,8 +100,8 @@
                        user1.pwd = weakSelf.pwdTF.text;
                        if (user1) {
                            [NSKeyedArchiver archiveRootObject:user1 toFile:USERINFOPATH];
-                           
                            [[NSUserDefaults standardUserDefaults]setBool:YES forKey:ISLOGIN];
+                           [[NSUserDefaults standardUserDefaults]synchronize];
                        }
                        [weakSelf.navigationController popViewControllerAnimated:NO];
                        [weakSelf alertWithString:@"登录成功"];

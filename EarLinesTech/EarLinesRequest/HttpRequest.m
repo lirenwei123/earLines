@@ -39,6 +39,7 @@
             
            manager.responseSerializer = [AFHTTPResponseSerializer serializer];
             manager.responseSerializer.acceptableContentTypes = [NSSet setWithObjects:@"application/json", @"text/json", @"text/javascript",@"text/plain", nil];
+            
             /**
              *  请求队列的最大并发数
              */
@@ -56,7 +57,6 @@
     }
     return manager;
 }
-
 
 #pragma mark -- GET请求 --
 + (void)getWithURLString:(NSString *)URLString

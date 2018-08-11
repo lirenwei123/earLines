@@ -48,7 +48,7 @@
     [self removeReturn];
     self.navigationTitle.text = @"耳纹科技分析";
     [self UI2];
-//    [self loginRequest];
+    [self loginRequest];
     
 }
 
@@ -75,9 +75,9 @@
                     }
                     
                 } error:^(NSError *error, NSInteger statusCode) {
-                    if (error) {
-                        [self alertWithString:[NSString stringWithFormat:@"%@",error]];
-                    }
+//                    if (error) {
+//                        [self alertWithString:[NSString stringWithFormat:@"%@",error]];
+//                    }
                 }];
                 
             }
