@@ -164,7 +164,7 @@
     
     //判断post/get
     HttpRequestType  RequestType = HttpRequestTypeGet;
-    if ([apiDetails.firstObject isEqualToString:@"POST"]) {
+    if ([apiDetails.firstObject isEqualToString:@"GET"]) {
         RequestType = HttpRequestTypePost;
     }else if ([apiDetails.firstObject isEqualToString:@"POST"]){
          RequestType = HttpRequestTypePost;
