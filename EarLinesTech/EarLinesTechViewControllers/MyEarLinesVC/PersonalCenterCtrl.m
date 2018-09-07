@@ -43,8 +43,8 @@ typedef NS_ENUM(NSUInteger, PERSONALCENTER_FUNCTION) {
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
-
+    [self addUI];
+  
 }
 
 #pragma  mark - 获取购物车商品数量
@@ -72,7 +72,7 @@ typedef NS_ENUM(NSUInteger, PERSONALCENTER_FUNCTION) {
     }];
 }
 
--(void)viewWillAppear:(BOOL)animated{
+-(void)viewDidAppear:(BOOL)animated{
     if ([USERBaseClass user].imageUrl.length) {
         NSURL *imgurl = [NSURL URLWithString:[USERBaseClass user].imageUrl];
         UIImage *head1 = [UIImage imageWithData:[NSData dataWithContentsOfURL:imgurl]];

@@ -44,11 +44,7 @@ NSString *const kUSERBaseClassRealNameAuthenticationInd = @"RealNameAuthenticati
 
 
 +(instancetype)user{
-    static USERBaseClass *user = nil;
-    if (user == nil) {
-        user = [NSKeyedUnarchiver unarchiveObjectWithFile:USERINFOPATH];
-    }
-    return user;
+    return [NSKeyedUnarchiver unarchiveObjectWithFile:USERINFOPATH];
 }
 
 + (instancetype)modelObjectWithDictionary:(NSDictionary *)dict {
