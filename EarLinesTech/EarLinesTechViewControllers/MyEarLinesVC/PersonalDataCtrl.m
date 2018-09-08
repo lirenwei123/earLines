@@ -208,7 +208,7 @@ typedef NS_ENUM(NSUInteger, PERSONCENTERTAG) {
         nameVC.originName = [USERBaseClass user].nickName;
         [self.navigationController pushViewController:nameVC animated:NO];
     }else if (tag == PERSONCENTER_logout){
-        USERBaseClass *user = nil;
+        static USERBaseClass *user = nil;
         
         [HttpRequest lrw_getWithURLString:[NSString stringWithFormat:@"%@user/logout",httpHead] parameters:nil success:^(id responseObject) {
             
@@ -216,9 +216,12 @@ typedef NS_ENUM(NSUInteger, PERSONCENTERTAG) {
             
         }];
         
-         [NSKeyedArchiver archiveRootObject:user toFile:USERINFOPATH];
         [[NSUserDefaults standardUserDefaults]setBool:NO forKey:ISLOGIN];
-        [self.navigationController popToRootViewControllerAnimated:YES];
+        [[NSUserDefaults standardUserDefaults]synchronize];
+        if ([NSKeyedArchiver archiveRootObject:user toFile:USERINFOPATH]) {
+            [self.navigationController popToRootViewControllerAnimated:YES];
+        }
+      
     }else if (tag == PERSONCENTER_loginpwd){
         pwdCtrl *vc  =[[pwdCtrl alloc]init];
         vc.pwdType = PWDTYPE_MODIFYPWD;

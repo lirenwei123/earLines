@@ -48,42 +48,42 @@
     [self removeReturn];
     self.navigationTitle.text = @"耳纹科技分析";
     [self UI2];
-    [self loginRequest];
+//    [self loginRequest];
     
 }
 
 
--(void)loginRequest{
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        if( [[NSUserDefaults standardUserDefaults]boolForKey:ISLOGIN]){
-            NSString *account= [USERBaseClass user].account;
-            __block  NSString *pwd = [USERBaseClass user].pwd;
-            
-            if (account.length && pwd.length ) {
-                NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys:account,@"Account",pwd,@"Password", nil];
-                [[EWKJRequest request]requestWithAPIId:user1 httphead:nil bodyParaDic:dict completed:^(id datas) {
-                    
-                    if (datas) {
-                        //更新token
-                        NSDictionary *dic = (NSDictionary*)datas[Data];
-                        USERBaseClass *user = [USERBaseClass user];
-                        user.token = dic[@"Token"];
-                        if (user) {
-                            [NSKeyedArchiver archiveRootObject:user toFile:USERINFOPATH];
-                        }
-                    }
-                    
-                } error:^(NSError *error, NSInteger statusCode) {
-//                    if (error) {
-//                        [self alertWithString:[NSString stringWithFormat:@"%@",error]];
+//-(void)loginRequest{
+//    static dispatch_once_t onceToken;
+//    dispatch_once(&onceToken, ^{
+//        if( [[NSUserDefaults standardUserDefaults]boolForKey:ISLOGIN]){
+//            NSString *account= [USERBaseClass user].account;
+//            __block  NSString *pwd = [USERBaseClass user].pwd;
+//
+//            if (account.length && pwd.length ) {
+//                NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys:account,@"Account",pwd,@"Password", nil];
+//                [[EWKJRequest request]requestWithAPIId:user1 httphead:nil bodyParaDic:dict completed:^(id datas) {
+//
+//                    if (datas) {
+//                        //更新token
+//                        NSDictionary *dic = (NSDictionary*)datas[Data];
+//                        USERBaseClass *user = [USERBaseClass user];
+//                        user.token = dic[@"Token"];
+//                        if (user) {
+//                            [NSKeyedArchiver archiveRootObject:user toFile:USERINFOPATH];
+//                        }
 //                    }
-                }];
-                
-            }
-        }
-    });
-}
+//
+//                } error:^(NSError *error, NSInteger statusCode) {
+////                    if (error) {
+////                        [self alertWithString:[NSString stringWithFormat:@"%@",error]];
+////                    }
+//                }];
+//
+//            }
+//        }
+//    });
+//}
 
 -(void)UI1{
     UIImage *image = [UIImage imageNamed:@"a_banner_bg"];

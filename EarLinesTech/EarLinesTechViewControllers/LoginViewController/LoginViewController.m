@@ -97,18 +97,21 @@
                        //保存客户登陆信息
                        NSDictionary *dic = (NSDictionary*)datas[Data];
                        USERBaseClass *user1 = [USERBaseClass modelObjectWithDictionary:dic];
-                       user1.pwd = weakSelf.pwdTF.text;
+//                       user1.pwd = weakSelf.pwdTF.text;
                        if (user1) {
-                           [NSKeyedArchiver archiveRootObject:user1 toFile:USERINFOPATH];
+                           
                            [[NSUserDefaults standardUserDefaults]setBool:YES forKey:ISLOGIN];
                            [[NSUserDefaults standardUserDefaults]synchronize];
+                           if ([NSKeyedArchiver archiveRootObject:user1 toFile:USERINFOPATH]) {
+                               [weakSelf.navigationController popViewControllerAnimated:NO];
+                                [weakSelf alertWithString:@"登录成功"];
+                               if (weakSelf.loginCompelete) {
+                                   weakSelf.loginCompelete();
+                               }
+                           }
+                           
                        }
-                       [weakSelf.navigationController popViewControllerAnimated:NO];
-                       [weakSelf alertWithString:@"登录成功"];
-                       
-                       if (weakSelf.loginCompelete) {
-                           weakSelf.loginCompelete();
-                       }
+                   
                    }
         else
         {
