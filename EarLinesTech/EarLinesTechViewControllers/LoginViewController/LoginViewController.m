@@ -97,7 +97,7 @@
                        //保存客户登陆信息
                        NSDictionary *dic = (NSDictionary*)datas[Data];
                        USERBaseClass *user1 = [USERBaseClass modelObjectWithDictionary:dic];
-                       user1.pwd = weakSelf.pwdTF.text;
+//                       user1.pwd = weakSelf.pwdTF.text;
                        if (user1) {
                            
                            [[NSUserDefaults standardUserDefaults]setBool:YES forKey:ISLOGIN];

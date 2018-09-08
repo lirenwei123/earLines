@@ -133,7 +133,7 @@ NSString *const kUSERBaseClassRealNameAuthenticationInd = @"RealNameAuthenticati
     [aCoder encodeObject:_account forKey:kUSERBaseClassAccount];
     [aCoder encodeDouble:_uniqueId forKey:kUSERBaseClassUniqueId];
     [aCoder encodeObject:_expirationDt forKey:kUSERBaseClassExpirationDt];
-    [aCoder encodeObject:_pwd forKey:kUSERBaseClasspwd];
+//    [aCoder encodeObject:_pwd forKey:kUSERBaseClasspwd];
     [aCoder encodeBool:_RealNameAuthenticationInd forKey:kUSERBaseClassRealNameAuthenticationInd];
 }
 
@@ -153,7 +153,7 @@ NSString *const kUSERBaseClassRealNameAuthenticationInd = @"RealNameAuthenticati
         copy.account = [self.account copyWithZone:zone];
         copy.uniqueId = self.uniqueId;
         copy.expirationDt = [self.expirationDt copyWithZone:zone];
-        copy.pwd = [self.pwd copyWithZone:zone];
+//        copy.pwd = [self.pwd copyWithZone:zone];
         copy.RealNameAuthenticationInd = self.RealNameAuthenticationInd;
     }
     
