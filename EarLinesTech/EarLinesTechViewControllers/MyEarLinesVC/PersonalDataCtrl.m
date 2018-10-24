@@ -183,8 +183,8 @@ typedef NS_ENUM(NSUInteger, PERSONCENTERTAG) {
     NSMutableArray *values = @[@"1223423",@"DWCFE",@"立即设置",@"12345678910"].mutableCopy;
     
     if ([USERBaseClass user]) {
-        [values replaceObjectAtIndex:0 withObject:[NSString stringWithFormat:@"%i",[USERBaseClass user].userId]];
-        
+//        [values replaceObjectAtIndex:0 withObject:[NSString stringWithFormat:@"%i",[USERBaseClass user].userId]];
+         [values replaceObjectAtIndex:0 withObject:[USERBaseClass user].account];
         [values replaceObjectAtIndex:1 withObject:[USERBaseClass user].nickName.length>1?[USERBaseClass user].nickName:@"立即设置"];
         [values replaceObjectAtIndex:3 withObject:[USERBaseClass user].account];
         

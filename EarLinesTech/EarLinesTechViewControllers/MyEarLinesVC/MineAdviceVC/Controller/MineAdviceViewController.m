@@ -71,7 +71,7 @@
     cell.textLabel.textColor = COLOR(51);
     cell.textLabel.font = EWKJfont(13);
     
-    cell.detailTextLabel.text = @"Account";
+    cell.detailTextLabel.text = [dict objectForKey:@"Account"];
     cell.detailTextLabel.textColor = COLOR(153);
     cell.detailTextLabel.font = EWKJfont(11);
     
